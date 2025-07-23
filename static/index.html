@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>PRIVATE BBS</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+
+<header>PRIVATE BBS</header>
+
+<div class="container" id="div_container">
+  <div class="post-form">
+    <h2>新規投稿</h2>
+    <textarea id="ta_body" placeholder="本文をどうぞ！" rows="3" required></textarea>
+    <button id="btn_post">投稿する</button>
+  </div>
+
+  <div id=posts>
+    <!--
+  <div class="post">
+    <img src="https://via.placeholder.com/600x400" alt="投稿画像">
+
+    <div class="post-content">
+      <p><strong>@user1</strong> おいしいランチ！🍱<br>
+      おいしいランチ！🍱<br>
+      おいしいランチ！🍱<br>
+      </p>
+    </div>
+    <div class="comments">
+      <div class="comment"><strong>@commenter</strong> 美味しそう！</div>
+      <div class="add-comment">
+        <input type="text" placeholder="コメントを書く..."><button>投稿</button>
+      </div>
+    </div>
+  </div>
+  -->
+  </div>
+</div>
+
+<!--
+<button id="btn_sync">更新</button>
+-->
+
+<footer>
+<hr>
+<div><a href=https://github.com/code4fukui/private-bbs/>src on GitHub</a></div>
+</footer>
+
+
+<script type="module">
+import { TAI64N } from "https://code4fukui.github.io/TAI64N-es/TAI64N.js";
+import { Post } from "./Post.js";
+import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser//PubkeyUser.js";
+import { DateTime } from "https://js.sabae.cc/DateTime.js";
+
+const u = new PubkeyUser();
+
+let data = [];
+
+let lastdt = null;
+
+const show = async () => {
+  posts.innerHTML = "";
+
+  const res = await u.fetch("getLatest", lastdt);
+  for (const item of res) {
+    if (!lastdt) {
+      lastdt = item.data.id;
+    } else {
+      if (item.data.id.localeCompare(lastdt) > 0) {
+        lastdt = item.data.id;
+      }
+    }
+  }
+  res.forEach(i => data.unshift(i));
+  for (const item of data) {
+    if (!item.data.parent) {
+      const div = makePost(item);
+      posts.appendChild(div);
+    }
+  }
+};
+
+const sendPost = async (body, parent = null) => {
+  const id = TAI64N.stringify(TAI64N.encode(new Date()));
+  const data = {
+    id,
+    parent,
+    pubkey: u.pubkey,
+    name: "user1",
+    body,
+    tags: ["test"],
+  };
+  const post = Post.create(data, Coder.decode(u.prikey));
+  const res = await u.fetch("add", post);
+  return res;
+};
+
+const getComments = (post) => {
+  const com = data.filter(i => post.data.id == i.data.parent);
+  com.sort((a, b) => a.data.id.localeCompare(b.data.id));
+  return com;
+};
+
+const time = (tai64n) => {
+  const dt = new DateTime(TAI64N.toDate(TAI64N.parse(tai64n)));
+  const now = new DateTime();
+  if (dt.day.equals(now.day)) {
+    return dt.time.toStringMin();
+  } else if (dt.day.year == now.day.year) {
+    return dt.day.month + "/" + dt.day.day;
+  } else {
+    return dt.day.year + "/" + dt.day.month + "/" + dt.day.day;
+  }
+};
+
+const makePost = (post) => {
+  const div = document.createElement("div");
+  div.className = "post";
+  const div2 = document.createElement("div");
+  div2.className = "post-content";
+  div.appendChild(div2);
+  const st = document.createElement("strong");
+  // st.textContent = item.data.name;
+  st.textContent = post.data.pubkey.substring(0, 4);
+  div2.appendChild(st);
+  const txt = document.createTextNode(post.data.body);
+  div2.appendChild(txt);
+  const dt = document.createElement("span");
+  dt.className = "time";
+  dt.textContent = time(post.data.id);
+  div2.appendChild(dt);
+  
+  // comments
+  const com = document.createElement("div");
+  com.className = "comments";
+  div.appendChild(com);
+
+  const comments = getComments(post);
+  for (const item of comments) {
+    const divc = document.createElement("div");
+    divc.className = "comment";
+    const st = document.createElement("strong");
+    // st.textContent = item.data.name;
+    st.textContent = item.data.pubkey.substring(0, 4);
+    divc.appendChild(st);
+    const text = document.createTextNode(item.data.body);
+    divc.appendChild(text);
+    const dt = document.createElement("span");
+    dt.className = "time";
+    dt.textContent = time(item.data.id);
+    divc.appendChild(dt);
+    com.appendChild(divc);
+  }
+  // comments form
+  const divcs = document.createElement("div");
+  divcs.className = "add-comment";
+  com.appendChild(divcs);
+  const inp = document.createElement("input");
+  inp.type = "text";
+  inp.placeholder = "コメントを書く...";
+  divcs.appendChild(inp);
+  const btn = document.createElement("button");
+  btn.textContent = "投稿";
+  divcs.appendChild(btn);
+  btn.onclick = async () => {
+    // post comment
+    const body = inp.value;
+    if (!body) return;
+    const parent = post.data.id;
+    if (await sendPost(body, parent)) {
+      inp.value = "";
+      await show();
+    }
+  };
+  return div;
+};
+
+btn_post.onclick = async (e) => {
+  const body = ta_body.value;
+  if (!body) return;
+  if (await sendPost(body)) {
+    ta_body.value = "";
+    await show();
+  }
+  e.preventDefault();
+};
+
+await show();
+
+btn_sync.onclick = async () => {
+  btn_sync.disabled = true;
+  await show();
+  btn_sync.disabled = false;
+};
+
+//const autoupdate = 10 * 1000;
+const autoupdate = 60 * 1000; // 1min
+setInterval(async () => {
+  await show();
+}, autoupdate);
+
+</script>
+</body></html>
