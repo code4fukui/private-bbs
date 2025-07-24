@@ -1,31 +1,17 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
-<title>困り事解決策、大募集BBS</title>
+<title>困り事 新規投稿</title>
 <link rel="stylesheet" href="style.css">
 </head><body>
 
-<header>困り事解決策、大募集BBS</header>
+<header>困り事解決策募集</header>
 
 <div class="container" id="div_container">
-  <div id=posts>
-    <!--
-  <div class="post">
-    <img src="https://via.placeholder.com/600x400" alt="投稿画像">
+  <div class="post-form">
+    <h2>困り事 新規投稿</h2>
+    <textarea id="ta_body" placeholder="困り事をどうぞ！" rows="3" required></textarea>
+    <button id="btn_post">投稿する</button>
+  </div>
 
-    <div class="post-content">
-      <p><strong>@user1</strong> おいしいランチ！🍱<br>
-      おいしいランチ！🍱<br>
-      おいしいランチ！🍱<br>
-      </p>
-    </div>
-    <div class="comments">
-      <div class="comment"><strong>@commenter</strong> 美味しそう！</div>
-      <div class="add-comment">
-        <input type="text" placeholder="コメントを書く..."><button>投稿</button>
-      </div>
-    </div>
-  </div>
-  -->
-  </div>
 </div>
 
 <!--
@@ -50,6 +36,8 @@ let data = [];
 let lastdt = null;
 
 const show = async () => {
+  return;
+
   posts.innerHTML = "";
 
   const res = await u.fetch("getLatest", lastdt);
@@ -62,7 +50,7 @@ const show = async () => {
       }
     }
   }
-  res.forEach(i => data.push(i));
+  res.forEach(i => data.unshift(i));
   for (const item of data) {
     if (!item.data.parent) {
       const div = makePost(item);
@@ -146,16 +134,9 @@ const makePost = (post) => {
   const divcs = document.createElement("div");
   divcs.className = "add-comment";
   com.appendChild(divcs);
-  const multilinecomment = true;
-  let inp = null;
-  if (multilinecomment) {
-    inp = document.createElement("textarea");
-    inp.placeholder = "解決策案をどうぞ！";
-  } else {
-    inp = document.createElement("input");
-    inp.type = "text";
-    inp.placeholder = "コメントを書く...";
-  }
+  const inp = document.createElement("input");
+  inp.type = "text";
+  inp.placeholder = "コメントを書く...";
   divcs.appendChild(inp);
   const btn = document.createElement("button");
   btn.textContent = "投稿";
@@ -173,17 +154,16 @@ const makePost = (post) => {
   return div;
 };
 
-if (document.btn_post) {
-  btn_post.onclick = async (e) => {
-    const body = ta_body.value;
-    if (!body) return;
-    if (await sendPost(body)) {
-      ta_body.value = "";
-      await show();
-    }
-    e.preventDefault();
-  };
-}
+btn_post.onclick = async (e) => {
+  const body = ta_body.value;
+  if (!body) return;
+  if (await sendPost(body)) {
+    ta_body.value = "";
+    await show();
+    location.href = "./";
+  }
+  e.preventDefault();
+};
 
 await show();
 
@@ -195,20 +175,13 @@ btn_sync.onclick = async () => {
 };
 */
 
+/*
 //const autoupdate = 10 * 1000;
 const autoupdate = 60 * 1000; // 1min
 setInterval(async () => {
   await show();
 }, autoupdate);
+*/
 
-// sticky header
-const header = document.querySelector("header");
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 50) {
-    header.classList.add('shrink');
-  } else {
-    header.classList.remove('shrink');
-  }
-});
 </script>
 </body></html>
