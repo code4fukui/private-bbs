@@ -51,7 +51,7 @@ header input[type="text"] {
   border-radius: 4px;
   cursor: pointer;
 }
-.post-form button:hover {
+.post-form button:hover:not(:disabled) {
   background: #ff5c93;
 }
 .post {
@@ -92,8 +92,12 @@ header input[type="text"] {
   border-radius: 4px;
   cursor: pointer;
 }
-.add-comment button:hover {
+.add-comment button:hover:not(:disabled) {
   background: #ff5c93;
+}
+button:disabled {
+  background: gray;
+  cursor: not-allowed;
 }
 strong {
   display: inline-block;
@@ -112,4 +116,31 @@ footer {
   text-align: center;
   margin: .5em;
   color: #a7667f;
+}
+
+/* toast */
+.toast {
+  visibility: hidden;
+  min-width: 220px;
+  background-color: #ff7da6; /* ピンク背景 */
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.5s ease;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px); /* 少し上に動く */
 }

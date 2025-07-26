@@ -48,8 +48,9 @@
 <script type="module">
 import { TAI64N } from "https://code4fukui.github.io/TAI64N-es/TAI64N.js";
 import { Post } from "./Post.js";
-import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser//PubkeyUser.js";
+import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/PubkeyUser.js";
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
+import { showToast } from "./showToast.js";
 
 const u = new PubkeyUser();
 
@@ -77,7 +78,6 @@ const show = async () => {
     let max = item.data.id;
     const chs = data.filter(i => i.data.parent == item.data.id);
     for (const ch of chs) {
-      console.log(max, ch.data.id, max.localeCompare(ch.data.id));
       if (max.localeCompare(ch.data.id) < 0) {
         max = ch.data.id;
       }
@@ -87,7 +87,6 @@ const show = async () => {
   for (const item of list) {
     item.latest = latest(item);
   }
-  console.log(list);
   list.sort((a, b) => b.latest.localeCompare(a.latest));
   for (const item of list) {
     const div = makePost(item);
@@ -115,8 +114,14 @@ const sendPost = async (body, parent = null) => {
     tags: [],
   };
   const post = Post.create(data, Coder.decode(u.prikey));
-  const res = await u.fetch("add", post);
-  return res;
+  try {
+    const res = await u.fetch("add", post);
+    return res;
+  } catch (e) {
+    console.log(e);
+    alert("通信エラーです。通信状況を確認して再度お試しください");
+    return null;
+  }
 };
 
 const getComments = (post) => {
@@ -189,26 +194,32 @@ const makePost = (post) => {
   btn.textContent = "投稿";
   divcs.appendChild(btn);
   btn.onclick = async () => {
+    btn.disabled = true;
     // post comment
     const body = inp.value;
     if (!body) return;
     const parent = post.data.id;
     if (await sendPost(body, parent)) {
       inp.value = "";
+      showToast("コメントしました");
       await show();
     }
+    btn.disabled = false;
   };
   return div;
 };
 
 btn_post.onclick = async (e) => {
+  btn_post.disabled = true;
   const body = ta_body.value;
   if (!body) return;
   if (await sendPost(body)) {
     ta_body.value = "";
+    showToast("投稿しました");
     await show();
   }
   e.preventDefault();
+  btn_post.disabled = false;
 };
 
 await show();
