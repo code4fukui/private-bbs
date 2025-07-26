@@ -22,7 +22,6 @@ header {
   border: 1px solid #ddd;
   margin-bottom: 2rem;
 }
-.post-form input[type="text"],
 .post-form textarea {
   font-size: 16px;
   width: 100%;
@@ -32,6 +31,13 @@ header {
   border-radius: 4px;
   resize: vertical; /* 横方向に拡大しない */
   box-sizing: border-box; /* padding・border を含めたサイズに */
+}
+header input[type="text"] {
+  font-size: 16px;
+  width: 5em;
+  margin-left: 2em;
+  padding: 0.4rem;
+  margin-right: 0.2rem;
 }
 .post-form button {
   background: #0095f6;
