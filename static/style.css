@@ -1,15 +1,16 @@
 body {
   font-family: sans-serif;
-  background: #fafafa;
+  background: #fff0f5; /* 薄いピンク背景 */
   margin: 0;
   padding: 0;
 }
 header {
-  background: #fff;
+  background: #ffe4e9; /* 薄ピンク */
   padding: 1rem;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
   text-align: center;
   font-weight: bold;
+  color: #d6336c; /* 落ち着いたピンク系文字色 */
 }
 .container {
   max-width: 600px;
@@ -19,18 +20,19 @@ header {
 .post-form {
   background: #fff;
   padding: 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid #f8c8d8;
   margin-bottom: 2rem;
+  border-radius: 6px;
 }
 .post-form textarea {
   font-size: 16px;
   width: 100%;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid #f3a6c1;
   border-radius: 4px;
-  resize: vertical; /* 横方向に拡大しない */
-  box-sizing: border-box; /* padding・border を含めたサイズに */
+  resize: vertical;
+  box-sizing: border-box;
 }
 header input[type="text"] {
   font-size: 16px;
@@ -38,19 +40,25 @@ header input[type="text"] {
   margin-left: 2em;
   padding: 0.4rem;
   margin-right: 0.2rem;
+  border: 1px solid #f3a6c1;
+  border-radius: 4px;
 }
 .post-form button {
-  background: #0095f6;
+  background: #ff7da6; /* ピンクボタン */
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
 }
+.post-form button:hover {
+  background: #ff5c93;
+}
 .post {
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #f8c8d8;
   margin-bottom: 2rem;
+  border-radius: 6px;
 }
 .post img {
   width: 100%;
@@ -61,7 +69,7 @@ header input[type="text"] {
   white-space: pre-wrap;
 }
 .comments {
-  border-top: 1px solid #eee;
+  border-top: 1px solid #f8c8d8;
   padding: 0.5rem 1rem;
 }
 .comment {
@@ -73,28 +81,35 @@ header input[type="text"] {
   width: 80%;
   padding: 0.4rem;
   margin-right: 0.2rem;
+  border: 1px solid #f3a6c1;
+  border-radius: 4px;
 }
 .add-comment button {
   padding: 0.4rem 0.8rem;
-  background: #0095f6;
+  background: #ff7da6;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
+.add-comment button:hover {
+  background: #ff5c93;
+}
 strong {
   display: inline-block;
   margin-right: 0.5em;
+  color: #d6336c;
 }
 .time {
   font-size: 85%;
-  color: #777;
+  color: #a7667f;
   margin-left: 1em;
 }
 a {
-  color: gray;
+  color: #d6336c;
 }
 footer {
   text-align: center;
   margin: .5em;
+  color: #a7667f;
 }
