@@ -222,8 +222,6 @@ btn_post.onclick = async (e) => {
   btn_post.disabled = false;
 };
 
-await show();
-
 /*
 btn_sync.onclick = async () => {
   btn_sync.disabled = true;
@@ -237,6 +235,10 @@ const autoupdate = 60 * 1000; // 1min
 setInterval(async () => {
   await show();
 }, autoupdate);
+
+onload = async () => {
+  await show();
+};
 
 </script>
 </body></html>
