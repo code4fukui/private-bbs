@@ -1,129 +1,263 @@
-body {
-  font-family: sans-serif;
-  background: #fff0f5; /* 薄いピンク背景 */
-  margin: 0;
-  padding: 0;
+/* =========================================================
+   BBS Styles (Mongolia × Kanazawa)
+   - Colors: deep blue / red / gold
+   - JP/Cyrillic friendly font stack
+   - Mobile-first, dark mode friendly, accessible focus
+   =========================================================
+   
+ちょいメモ
+見出しバーは「青→赤→金」のグラデ。入力欄は半透明で“北陸のガラス細工”っぽい雰囲気。
+
+フォントは日本語＋キリル文字（モンゴル語）を無難に表示できるスタックに。必要なら Google Fonts で Noto Sans JP と Noto Sans を読み込むとより綺麗。
+
+画像横並びは 720px 以上で自動適用。スマホだと縦積み。
+
+ダークモードは OS 設定に追従。
+
+色味や雰囲気、もう少し「金箔強め」や「大学っぽい落ち着き」など好みに寄せたい場合は言ってね—パレット調整版もすぐ出すよ。
+
+    */
+:root{
+  --bg: #f7f7f5;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --muted: #6b7280;
+
+  --blue: #0b4b8f;   /* Mongolia blue */
+  --red:  #c51e2c;   /* Mongolia red */
+  --gold: #c9a227;   /* Kanazawa gold */
+
+  --accent: var(--blue);
+  --ring:   color-mix(in oklab, var(--accent) 60%, white);
+
+  --radius: 14px;
+  --shadow: 0 8px 30px rgba(0,0,0,.08);
 }
-header {
-  background: #ffe4e9; /* 薄ピンク */
-  padding: 1rem;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-  text-align: center;
-  font-weight: bold;
-  color: #d6336c; /* 落ち着いたピンク系文字色 */
-}
-.container {
-  max-width: 600px;
-  margin: 1rem auto;
-  padding: 0 1rem;
-}
-.post-form {
-  background: #fff;
-  padding: 1rem;
-  border: 1px solid #f8c8d8;
-  margin-bottom: 2rem;
-  border-radius: 6px;
-}
-.post-form textarea {
-  font-size: 16px;
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border: 1px solid #f3a6c1;
-  border-radius: 4px;
-  resize: vertical;
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
-header input[type="text"] {
-  font-size: 16px;
-  width: 5em;
-  margin-left: 2em;
-  padding: 0.4rem;
-  margin-right: 0.2rem;
-  border: 1px solid #f3a6c1;
-  border-radius: 4px;
+
+/* Dark mode */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0e1116;
+    --card:#151922;
+    --text:#eef2f7;
+    --muted:#99a1b3;
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+    --ring:   color-mix(in oklab, var(--accent) 50%, black);
+  }
 }
-.post-form button {
-  background: #ff7da6; /* ピンクボタン */
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
+
+/* Font: JP + Cyrillic フレンドリー */
+html,body{
+  height:100%;
 }
-.post-form button:hover:not(:disabled) {
-  background: #ff5c93;
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI",
+        "Noto Sans JP","Noto Sans","Inter","Roboto",
+        "Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",
+        "Noto Sans Mongolian","Noto Sans Mono","Arial", sans-serif;
 }
-.post {
-  background: #fff;
-  border: 1px solid #f8c8d8;
-  margin-bottom: 2rem;
-  border-radius: 6px;
+
+/* Header */
+header{
+  position: sticky; top:0; z-index:10;
+  display:flex; gap:.8rem; align-items:center; justify-content:space-between;
+  padding: .9rem 1rem;
+  background:
+    linear-gradient(90deg, var(--blue) 0 45%, var(--red) 45% 90%, var(--gold) 90% 100%);
+  color:#fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,.15);
 }
-.post img {
-  width: 100%;
-  display: block;
+#title{
+  margin:0; font-size:1.25rem; letter-spacing:.03em;
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
 }
-.post-content {
+#in_name{
+  flex:0 1 240px;
+  max-width:60%;
+  padding:.55rem .8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.35);
+  background: rgba(255,255,255,.15);
+  color:#fff;
+  outline: none;
+  backdrop-filter: blur(6px);
+}
+#in_name::placeholder{ color: rgba(255,255,255,.85); }
+#in_name:focus{
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.35);
+}
+
+/* Container */
+.container{
+  max-width:900px;
+  margin: 18px auto 64px;
+  padding: 0 12px;
+}
+
+/* Post form */
+.post-form{
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   padding: 1rem;
-  white-space: pre-wrap;
+  border: 1px solid rgba(0,0,0,.06);
 }
-.comments {
-  border-top: 1px solid #f8c8d8;
-  padding: 0.5rem 1rem;
+.post-form h2{
+  margin:.2rem 0 0.6rem; font-size:1.05rem;
 }
-.comment {
-  margin-bottom: 0.5rem;
-  font-size: 0.9em;
+.post-form textarea{
+  width:100%;
+  min-height: 110px;
+  resize: vertical;
+  padding:.8rem;
+  border-radius: 12px;
+  border:1px solid #d1d5db;
+  background: color-mix(in oklab, var(--card) 92%, black 8%);
+  color:var(--text);
+  outline:none;
 }
-.add-comment input[type="text"] {
-  font-size: 16px;
-  width: 80%;
-  padding: 0.4rem;
-  margin-right: 0.2rem;
-  border: 1px solid #f3a6c1;
-  border-radius: 4px;
+.post-form textarea:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
 }
-.add-comment button {
-  padding: 0.4rem 0.8rem;
-  background: #ff7da6;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+#btn_post{
+  margin-top:.6rem;
+  padding:.6rem 1rem;
+  border:0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--blue), var(--gold));
+  color:#fff; font-weight:600;
+  cursor:pointer;
+  box-shadow: 0 6px 16px rgba(0,0,0,.2);
+  transition: transform .05s ease, filter .2s ease;
 }
-.add-comment button:hover:not(:disabled) {
-  background: #ff5c93;
+#btn_post:hover{ filter:brightness(1.06) }
+#btn_post:active{ transform: translateY(1px) }
+#btn_post:disabled{
+  filter: grayscale(.3) brightness(.8);
+  cursor: not-allowed; opacity:.8;
 }
-button:disabled {
-  background: gray;
-  cursor: not-allowed;
+
+/* Posts list */
+#posts{
+  display:grid; gap: 16px;
+  margin-top: 18px;
 }
-strong {
-  display: inline-block;
-  margin-right: 0.5em;
-  color: #d6336c;
+
+/* Post card */
+.post{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: clip;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(0,0,0,.06);
 }
-.time {
-  font-size: 85%;
-  color: #a7667f;
-  margin-left: 1em;
+
+/* Image */
+.post > img{
+  width:100%; height:auto; display:block;
+  aspect-ratio: 3 / 2; object-fit: cover;
 }
-a {
-  color: #d6336c;
+
+/* Content */
+.post-content{
+  padding: .6rem .9rem .2rem;
 }
-footer {
-  text-align: center;
-  margin: .5em;
-  color: #a7667f;
+.post-content p{
+  margin:.2rem 0 .6rem;
+  white-space: pre-wrap; word-break: break-word;
+}
+.post-content strong{
+  color: var(--accent);
+  padding-right: .5em;
+}
+
+/* Comments */
+.comments{
+  padding: 0 .9rem 1rem;
+  border-top: 1px dashed rgba(0,0,0,.1);
+}
+.comment{
+  padding:.35rem .6rem;
+  background: color-mix(in oklab, var(--gold) 18%, var(--card));
+  border: 1px solid color-mix(in oklab, var(--gold) 40%, transparent);
+  border-radius: 10px;
+  display:inline-block;
+  margin:.35rem 0;
+}
+.comment strong{
+  padding-right: .5em;
+}
+.add-comment{
+  margin-top:.6rem;
+  display:flex; gap:.5rem; align-items:center;
+}
+.add-comment input{
+  flex:1; padding:.55rem .7rem;
+  border-radius: 999px;
+  border:1px solid #cbd5e1;
+  background: color-mix(in oklab, var(--card) 92%, black 8%);
+  color:var(--text); outline:none;
+}
+.add-comment input::placeholder{ color: var(--muted); }
+.add-comment input:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+.add-comment button{
+  padding:.55rem .9rem; border:0; border-radius:999px;
+  background: var(--red); color:#fff; font-weight:600; cursor:pointer;
+  box-shadow: 0 6px 16px rgba(0,0,0,.18);
+}
+.add-comment button:hover{ filter:brightness(1.05) }
+
+/* Wide screens: make post layout side-by-side */
+@media (min-width: 720px){
+  .post{
+    grid-template-columns: 48% 52%;
+    align-items: start;
+  }
+  .post > img{ height:100%; aspect-ratio:auto; }
+  .post-content{ padding: 1rem 1rem .4rem; }
+  .comments{ padding: 0 1rem 1rem; }
+}
+
+/* Accessibility: visible focus for all buttons/inputs */
+button, input, textarea{
+  font-family: inherit;
+}
+button:focus-visible, input:focus-visible, textarea:focus-visible{
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Small helper: subtle separators between posts */
+#posts .post:not(:last-child){ position: relative; }
+#posts .post:not(:last-child)::after{
+  content:"";
+  position:absolute; left:10%; right:10%; bottom:-8px; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,.08), transparent);
 }
 
 /* toast */
 .toast {
   visibility: hidden;
   min-width: 220px;
-  background-color: #ff7da6; /* ピンク背景 */
-  color: #fff;
+  background-color: var(--card);
+  color: black;
   text-align: center;
   border-radius: 8px;
   padding: 0.8rem 1rem;
