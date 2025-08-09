@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
-<title>ナースケットBBS</title>
+<title>BBS</title>
 <link rel="stylesheet" href="style.css">
 </head><body>
 
-<header>ナースケットBBS
+<header><h1 id="title">BBS</h1>
 <input type="text" id="in_name" placeholder="名前">
 </header>
 
@@ -51,6 +51,9 @@ import { Post } from "./Post.js";
 import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/PubkeyUser.js";
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
 import { showToast } from "./showToast.js";
+
+const settings = await (await fetch("./settings.json")).json();
+document.title = title.textContent = settings.title;
 
 const u = new PubkeyUser();
 
@@ -236,9 +239,6 @@ setInterval(async () => {
   await show();
 }, autoupdate);
 
-onload = async () => {
-  await show();
-};
-
+await show();
 </script>
 </body></html>
