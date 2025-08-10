@@ -19,7 +19,7 @@ export const fetchTranslation = async (from, fromlang, tolangs = null) => { // "
   const messages = [
     { "role": "system", "content": `あなたは${sfromlang}→${stolangs.join("・")}の翻訳者です。
 入力として与えられた${sfromlang}の文字列をもとに、${stolangs2.join("、")}を正確に翻訳して埋めてください。
-出力形式は { ${tolangs2.join(", ")} } のJSONのみとし、余分な説明や改行は加えないでください。`
+出力形式は { ${tolangs2.join(", ")} } のJSONのみとし、余分な説明や改行は加えないでください。文字列内の「"」や改行はJSON文字列としてエスケープしてください。`
     },
     { "role": "user", "content": from },
   ];
@@ -36,7 +36,8 @@ export const fetchTranslation = async (from, fromlang, tolangs = null) => { // "
 
 if (import.meta.main) {
   //const res = await fetchTranslation("ありがとう", "ja", ["mn", "en"]);
-  const res = await fetchTranslation("どういたしまして", "ja"); // default other langs
+  //const res = await fetchTranslation("どういたしまして", "ja"); // default other langs
+  const res = await fetchTranslation("\"YES\"は日本語で\nはい\nを意味します", "ja"); // default other langs
   //const res2 = await fetchTranslation("はろー", "ja", ["mn", "en", "fr"]); // err
   console.log(res);
 }
