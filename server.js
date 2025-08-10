@@ -2,7 +2,7 @@ import { makeFetch } from "https://code4fukui.github.io/PubkeyUser/serverutil.js
 import { Posts } from "./Posts.js";
 import { JSONLWriter } from "https://code4fukui.github.io/JSONL/JSONLWriter.js";
 import { DateTime, TimeZone } from "https://js.sabae.cc/DateTime.js";
-import { fetchTranslation } from "./fetchTranslation.js";
+import { addTranslations } from "./addTranslations.js";
 
 const posts = await Posts.create();
 
@@ -17,12 +17,6 @@ const log = async (pubkey, path, param, req, conn) => {
   w.close();
 };
 
-const addTranslation = async (post) => {
-  const res = await fetchTranslation(post.data.body, post.data.lang);
-  post.data.translations = res;
-  return res;
-};
-
 const api = async (path, param, pubkey, req, conn) => {
   //console.log("api", path, path == "add", param, pubkey)
   log(pubkey, path, param, req, conn);
@@ -30,9 +24,14 @@ const api = async (path, param, pubkey, req, conn) => {
   if (path == "add") {
     console.log("add", path)
     const post = param;
-    await addTranslation(post);
+    await addTranslations(post);
     const res = await posts.add(post);
-    console.log("res", res);
+    //console.log("res", res);
+    /*
+    addTranslations(post).then(async _ => {
+      await posts.savePost(post);
+    });
+    */
     return res;
   } else if (path == "get") {
     const p2 = await posts.get(id);
