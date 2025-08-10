@@ -235,11 +235,13 @@ const makePost = (post) => {
     const body = inp.value;
     if (!body) return;
     const parent = post.data.id;
-    showToast("コメントを翻訳中");
+    showToast(translate("コメントを翻訳中"), 0);
     if (await sendPost(body, parent)) {
       inp.value = "";
-      showToast("コメントしました");
+      showToast(translate("コメントしました"));
       await show();
+    } else {
+      showToast(translate("コメントできませんでした"));
     }
     btn.disabled = false;
   };
@@ -250,11 +252,13 @@ btn_post.onclick = async (e) => {
   btn_post.disabled = true;
   const body = ta_body.value;
   if (!body) return;
-  showToast("投稿を翻訳中");
+  showToast(translate("投稿を翻訳中"), 0);
   if (await sendPost(body)) {
     ta_body.value = "";
-    showToast("投稿しました");
+    showToast(translate("投稿しました"));
     await show();
+  } else {
+    showToast(translate("投稿できませんでした"));
   }
   e.preventDefault();
   btn_post.disabled = false;

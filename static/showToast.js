@@ -1,13 +1,21 @@
-export const showToast = (message = "toast") => {
+let bktoast = null;
+
+export const showToast = (message = "toast", timeout = 3000) => {
+  if (bktoast) {
+    document.body.removeChild(bktoast);
+  }
   const toast = document.createElement("div");
   toast.className = "toast";
   document.body.appendChild(toast);
   toast.textContent = message;
   toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
+  if (timeout) {
     setTimeout(() => {
-      document.body.removeChild(toast);
-    }, 500);
-  }, 3000);
+      toast.classList.remove("show");
+      setTimeout(() => {
+        document.body.removeChild(toast);
+      }, 500);
+    }, timeout);
+  }
+  bktoast = toast;
 };

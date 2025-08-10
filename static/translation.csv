@@ -1,7 +1,15 @@
-ja,en,mn
+﻿ja,en,mn
 新規投稿,New Post,Шинэ мэдээ
 投稿する,Post,Нийтлэх
 本文をどうぞ！,Write your message!,Өөрийн бичлэгээ бичээрэй!
 名前,Name,Нэр
 コメントする,Comment,Сэтгэгдэл бичих
 コメント,Comment,Сэтгэгдэл
+名前をご記入ください,Please enter your name.,Нэрээ оруулна уу.
+通信エラーです。通信状況を確認して再度お試しください,Network error. Please check your connection and try again.,Холболтын алдаа гарлаа. Холболтын төлвөө шалгаад дахин оролдоно уу.
+コメントを翻訳中,Translating the comment,Сэтгэгдлийг орчуулж байна
+コメントしました,I left a comment,Сэтгэгдэл үлдээлээ
+投稿を翻訳中,Translating the post...,Нийтлэлийг орчуулж байна...
+投稿しました,I've posted it.,Нийтэллээ.
+投稿できませんでした,Failed to post.,Нийтэлж чадсангүй.
+コメントできませんでした,Couldn't comment,Сэтгэгдэл үлдээж чадсангүй
