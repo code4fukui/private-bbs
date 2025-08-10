@@ -4,14 +4,21 @@
 </head><body>
 
 <header><h1 id="title">BBS</h1>
-<input type="text" id="in_name" placeholder="名前">
+<div>
+  <input type="text" id="in_name" placeholder="名前">
+  <select id="sellang">
+    <option value=ja>🇯🇵</option>
+    <option value=mn>🇲🇳</option>
+    <option value=en>🇺🇸</option>
+  </select>
+</div>
 </header>
 
 <div class="container" id="div_container">
   <div class="post-form">
-    <h2>新規投稿</h2>
-    <textarea id="ta_body" placeholder="本文をどうぞ！" rows="3" required></textarea>
-    <button id="btn_post">投稿する</button>
+    <h2 class="text">新規投稿</h2>
+    <textarea id="ta_body" class="text" placeholder="本文をどうぞ！" rows="3" required></textarea>
+    <button id="btn_post" class="text">投稿する</button>
   </div>
 
   <div id=posts>
@@ -51,6 +58,9 @@ import { Post } from "./Post.js";
 import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/PubkeyUser.js";
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
 import { showToast } from "./showToast.js";
+import { detectLanguage } from "./detectLanguage.js";
+import { changeLanguage } from "./changeLanguage.js";
+import { getLanguage } from "https://code4fukui.github.io/i18n/getLanguage.js"; // query lang
 
 const settings = await (await fetch("./settings.json")).json();
 document.title = title.textContent = settings.title;
@@ -107,6 +117,8 @@ const sendPost = async (body, parent = null) => {
   }
   localStorage.setItem("name", name);
 
+  const lang = detectLanguage(body);
+
   const id = TAI64N.stringify(TAI64N.encode(new Date()));
   const data = {
     id,
@@ -114,6 +126,7 @@ const sendPost = async (body, parent = null) => {
     pubkey: u.pubkey,
     name,
     body,
+    lang,
     tags: [],
   };
   const post = Post.create(data, Coder.decode(u.prikey));
@@ -145,6 +158,23 @@ const time = (tai64n) => {
   }
 };
 
+const getBody = (post) => {
+  /*
+  const text = (body) => document.createTextNode(body);
+  if (!post.data.translations) return text(post.data.body);
+  const tbody = post.data.translations[lang];
+  if (!tbody) return text(post.data.body);
+  */
+  const lang = sellang.value;
+  const span = document.createElement("span");
+  span.translations = post.data.translations || {};
+  span.translations[post.data.lang] = post.data.body;
+  span.textContent = span.translations[lang];
+  span.className = "text";
+  span.lang = post.data.lang;
+  return span;
+};
+
 const makePost = (post) => {
   const div = document.createElement("div");
   div.className = "post";
@@ -156,7 +186,8 @@ const makePost = (post) => {
   st.title = post.data.pubkey;
   //st.textContent = post.data.pubkey.substring(0, 4);
   div2.appendChild(st);
-  const txt = document.createTextNode(post.data.body);
+  const txt = getBody(post);
+  console.log(txt);
   div2.appendChild(txt);
   const dt = document.createElement("span");
   dt.className = "time";
@@ -177,7 +208,7 @@ const makePost = (post) => {
     st.title = item.data.pubkey;
     //st.textContent = item.data.pubkey.substring(0, 4);
     divc.appendChild(st);
-    const text = document.createTextNode(item.data.body);
+    const text = getBody(item);
     divc.appendChild(text);
     const dt = document.createElement("span");
     dt.className = "time";
@@ -191,10 +222,12 @@ const makePost = (post) => {
   com.appendChild(divcs);
   const inp = document.createElement("input");
   inp.type = "text";
-  inp.placeholder = "コメントを書く...";
+  inp.className = "text";
+  inp.placeholder = "コメント";
   divcs.appendChild(inp);
   const btn = document.createElement("button");
-  btn.textContent = "投稿";
+  btn.className = "text";
+  btn.textContent = "コメントする";
   divcs.appendChild(btn);
   btn.onclick = async () => {
     btn.disabled = true;
@@ -240,5 +273,13 @@ setInterval(async () => {
 }, autoupdate);
 
 await show();
+
+//changeLanguageFromJA("mn");
+sellang.value = getLanguage();
+changeLanguage(sellang.value);
+sellang.oninput = () => {
+  changeLanguage(sellang.value);
+};
+
 </script>
 </body></html>

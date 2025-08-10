@@ -96,6 +96,11 @@ header{
   border-color: #fff;
   box-shadow: 0 0 0 3px rgba(255,255,255,.35);
 }
+header select {
+  font-size: 18px;
+  padding: .2em;
+  margin-left: .8em;
+}
 
 /* Container */
 .container{
@@ -184,10 +189,13 @@ header{
   color: var(--accent);
   padding-right: .5em;
 }
+.post-content .time {
+  padding-left: .5em;
+}
 
 /* Comments */
 .comments{
-  padding: 0 .9rem 1rem;
+  padding: 0.4rem .9rem 1rem;
   border-top: 1px dashed rgba(0,0,0,.1);
 }
 .comment{
@@ -201,6 +209,10 @@ header{
 .comment strong{
   padding-right: .5em;
 }
+.comment .time {
+  padding-left: .5em;
+}
+
 .add-comment{
   margin-top:.6rem;
   display:flex; gap:.5rem; align-items:center;
@@ -232,7 +244,7 @@ header{
   }
   .post > img{ height:100%; aspect-ratio:auto; }
   .post-content{ padding: 1rem 1rem .4rem; }
-  .comments{ padding: 0 1rem 1rem; }
+  .comments{ padding: .8rem 1rem 1rem; }
 }
 
 /* Accessibility: visible focus for all buttons/inputs */
@@ -277,4 +289,13 @@ button:focus-visible, input:focus-visible, textarea:focus-visible{
   visibility: visible;
   opacity: 1;
   transform: translateX(-50%) translateY(-10px); /* 少し上に動く */
+}
+
+/* footer */
+footer {
+  padding: .5em;
+  background-color: white;
+}
+footer a {
+  color: black !important;
 }
