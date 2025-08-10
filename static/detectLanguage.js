@@ -24,17 +24,20 @@ export const detectLanguage = (text) => {
     ja: japaneseMatch ? japaneseMatch.length : 0,
     en: englishMatch ? englishMatch.length : 0
   };
+  //const maxCount = Math.max(counts.mn, counts.ja, counts.en);
 
-  const maxCount = Math.max(counts.mn, counts.ja, counts.en);
-
-  if (maxCount === 0) {
-    return defaultLang; // 判定できない場合はデフォルト
-  } else if (maxCount === counts.mn) {
+  if (counts.ja == 0 && counts.mn == 0) {
+    if (counts.en == 0) {
+      return defaultLang;
+    } else {
+      return "en";
+    }
+  } else if (counts.ja == 0 && counts.mn > 0) {
     return "mn";
-  } else if (maxCount === counts.ja) {
+  } else if (counts.mn == 0 && counts.ja > 0) {
     return "ja";
   } else {
-    return "en";
+    return defaultLang;
   }
 };
 
@@ -43,4 +46,6 @@ if (import.meta.main) {
   console.log(detectLanguage("こんにちは")); // "ja"
   console.log(detectLanguage("Сайн байна уу")); // "mn"
   console.log(detectLanguage("Hello world")); // "en"
+  console.log(detectLanguage("URLはこちら https://fukuno.jig.jp/")); // "ja"
+  console.log(detectLanguage("https://fukuno.jig.jp/")); // "en"
 } 
