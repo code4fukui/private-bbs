@@ -2,12 +2,13 @@ import { CSV } from "https://js.sabae.cc/CSV.js";
 import { getLanguage } from "https://code4fukui.github.io/i18n/getLanguage.js"; // query lang
 
 let flginit = false;
+let data = null;
 
 const initTranslation = async () => {
 	if (flginit) return;
 	flginit = true;
   // ja,mn,en
-	const data = await CSV.fetchJSON("translation.csv");
+	data = await CSV.fetchJSON("translation.csv");
 	
 	const txts = document.querySelectorAll(".text");
 	txts.forEach(i => {
@@ -19,6 +20,12 @@ const initTranslation = async () => {
 			i.translations = item;
 		}
 	});
+};
+
+export const translate = (ja, lang) => {
+	const item = data.find(i => i.ja == ja);
+	if (!item || !item[lang]) return ja;
+	return item[lang];
 };
 
 export const changeLanguage = async (lang = null) => {

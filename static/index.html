@@ -59,7 +59,7 @@ import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/Pubke
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
 import { showToast } from "./showToast.js";
 import { detectLanguage } from "./detectLanguage.js";
-import { changeLanguage } from "./changeLanguage.js";
+import { changeLanguage, translate } from "./changeLanguage.js";
 import { getLanguage } from "https://code4fukui.github.io/i18n/getLanguage.js"; // query lang
 
 const settings = await (await fetch("./settings.json")).json();
@@ -112,7 +112,7 @@ in_name.value = localStorage.getItem("name") || "";
 const sendPost = async (body, parent = null) => {
   const name = in_name.value;
   if (!name) {
-    alert("名前をご記入ください");
+    alert(translate("名前をご記入ください"));
     return;
   }
   localStorage.setItem("name", name);
@@ -135,7 +135,7 @@ const sendPost = async (body, parent = null) => {
     return res;
   } catch (e) {
     console.log(e);
-    alert("通信エラーです。通信状況を確認して再度お試しください");
+    alert(translate("通信エラーです。通信状況を確認して再度お試しください"));
     return null;
   }
 };
@@ -235,6 +235,7 @@ const makePost = (post) => {
     const body = inp.value;
     if (!body) return;
     const parent = post.data.id;
+    showToast("コメントを翻訳中");
     if (await sendPost(body, parent)) {
       inp.value = "";
       showToast("コメントしました");
@@ -249,6 +250,7 @@ btn_post.onclick = async (e) => {
   btn_post.disabled = true;
   const body = ta_body.value;
   if (!body) return;
+  showToast("投稿を翻訳中");
   if (await sendPost(body)) {
     ta_body.value = "";
     showToast("投稿しました");
