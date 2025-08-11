@@ -1,5 +1,6 @@
 import { CSV } from "https://js.sabae.cc/CSV.js";
 import { getLanguage } from "https://code4fukui.github.io/i18n/getLanguage.js"; // query lang
+import { makeTextWithLink } from "./makeTextWithLink.js";
 
 let flginit = false;
 let data = null;
@@ -43,7 +44,7 @@ export const changeLanguage = async (lang = null) => {
 		if (i.flgplaceholder) {
 			i.placeholder = txt;
 		} else {
-			i.textContent = txt;
+			i.innerHTML = makeTextWithLink(txt);
 		}
 	});
 };

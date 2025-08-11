@@ -61,6 +61,7 @@ import { showToast } from "./showToast.js";
 import { detectLanguage } from "./detectLanguage.js";
 import { changeLanguage, translate } from "./changeLanguage.js";
 import { getLanguage } from "https://code4fukui.github.io/i18n/getLanguage.js"; // query lang
+import { makeTextWithLink } from "./makeTextWithLink.js";
 
 const settings = await (await fetch("./settings.json")).json();
 document.title = title.textContent = settings.title;
@@ -169,7 +170,7 @@ const getBody = (post) => {
   const span = document.createElement("span");
   span.translations = post.data.translations || {};
   span.translations[post.data.lang] = post.data.body;
-  span.textContent = span.translations[lang];
+  span.innerHTML = makeTextWithLink(span.translations[lang]);
   span.className = "text";
   span.lang = post.data.lang;
   return span;
@@ -187,7 +188,7 @@ const makePost = (post) => {
   //st.textContent = post.data.pubkey.substring(0, 4);
   div2.appendChild(st);
   const txt = getBody(post);
-  console.log(txt);
+  //console.log(txt);
   div2.appendChild(txt);
   const dt = document.createElement("span");
   dt.className = "time";
