@@ -40,6 +40,10 @@
   box-sizing: border-box;
 }
 
+input, textarea {
+  font-size: 16px;
+}
+
 /* Dark mode */
 @media (prefers-color-scheme: dark){
   :root{
