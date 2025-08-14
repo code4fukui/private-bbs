@@ -1,10 +1,13 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>BBS</title>
 <link rel="stylesheet" href="style.css">
 </head><body>
 
 <header><h1 id="title">BBS</h1>
 <input type="text" id="in_name" placeholder="名前">
+<span id=spannotify>🔔<span id=spannotifyswitch>OFF</span></span>
+<span id=spanreload style="padding-left: 1em;">🔃</span>
 </header>
 
 <div class="container" id="div_container">
@@ -51,11 +54,43 @@ import { Post } from "./Post.js";
 import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/PubkeyUser.js";
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
 import { showToast } from "./showToast.js";
+//import { WebPush } from "https://code4fukui.github.io/tsuchichat/static/WebPush.js";
+import { WebPush } from "./WebPush.js";
 
 const settings = await (await fetch("./settings.json")).json();
 document.title = title.textContent = settings.title;
 
 const u = new PubkeyUser();
+
+//
+let uuid = WebPush.getID();
+spannotifyswitch.textContent = uuid ? "ON" : "OFF";
+let spannotifyjob = false;
+spannotify.onclick = async () => {
+  if (spannotifyjob) return;
+  spannotifyjob = true;
+  try {
+    if (spannotifyswitch.textContent == "OFF") {
+      //btnSubscribe.disabled = true;
+      //btnSubscribe.textContent = "登録中...";
+      showToast("通知の登録中です...", 0);
+      uuid = await WebPush.subscribe(u);
+      //btnSubscribe.textContent = "登録済み";
+      showToast("通知を登録しました")
+    } else {
+      showToast("通知の解除中です...", 0);
+      await WebPush.unsubscribe(u);
+      uuid = null;
+      showToast("通知を解除しました")
+    }
+  } catch (e) {
+    alert(e);
+  }
+  spannotifyswitch.textContent = uuid ? "ON" : "OFF";
+  spannotifyjob = false;
+};
+//
+
 
 let data = [];
 
@@ -115,6 +150,7 @@ const sendPost = async (body, parent = null) => {
     name,
     body,
     tags: [],
+    uuid,
   };
   const post = Post.create(data, Coder.decode(u.prikey));
   try {
@@ -242,5 +278,9 @@ setInterval(async () => {
 */
 
 await show();
+
+spanreload.onclick = async () => {
+  await show();
+};
 </script>
 </body></html>
