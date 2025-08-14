@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>BBS</title>
-<link rel="stylesheet" href="style.css">
+<!--<link rel="stylesheet" href="style.css">-->
 </head><body>
 
 <header><h1 id="title">BBS</h1>
@@ -47,6 +47,21 @@
 <div><a href=https://github.com/code4fukui/private-bbs/>src on GitHub</a></div>
 </footer>
 
+<script>
+const cssstyle = localStorage.getItem("cssstyle");
+if (cssstyle) {
+  document.write(`<link rel="stylesheet" href="${cssstyle}" id="link_csssytle">`);
+}
+/* // ちらつく
+if (cssstyle) {
+  const csslink = document.createElement("link");
+  csslink.rel = "stylesheet";
+  csslink.href = cssstyle;
+  csslink.id = "link_csssytle";
+  document.head.appendChild(csslink);
+}
+*/
+</script>
 
 <script type="module">
 import { TAI64N } from "https://code4fukui.github.io/TAI64N-es/TAI64N.js";
@@ -59,6 +74,16 @@ import { WebPush } from "./WebPush.js";
 
 const settings = await (await fetch("./settings.json")).json();
 document.title = title.textContent = settings.title;
+const cssstyle2 = settings.css || "style.css";
+localStorage.setItem("cssstyle", cssstyle2);
+if (!window["link_csssytle"]) {
+  const csslink = document.createElement("link");
+  csslink.rel = "stylesheet";
+  csslink.href = cssstyle2;
+  document.head.appendChild(csslink);
+}
+
+
 
 const u = new PubkeyUser();
 
