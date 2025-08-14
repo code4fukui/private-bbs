@@ -12,7 +12,7 @@ const posts = await Posts.create();
 const logdir = "log";
 
 const log = async (pubkey, path, param, req, conn) => {
-  const ua = req.headers?.get("user-agent") || "";
+  const ua = req?.headers.get("user-agent") || "";
   const dt = new DateTime();
   const ymd = dt.toLocal(TimeZone.JST).day.toStringYMD();
   const w = new JSONLWriter(logdir + "/" + ymd + ".jsonl", true);
