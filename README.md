@@ -13,3 +13,7 @@ deno run -A https://code4fukui.github.io/WebPush/init.js yourmailaddress@yourdom
 ```sh
 deno serve --allow-import --allow-write --allow-read --allow-net --port 8080 --host "[::]" server.js
 ```
+
+## reference
+
+- [WebPush](https://github.com/code4fukui/WebPush)
