@@ -36,25 +36,20 @@ const api = async (path, param, pubkey, req, conn) => {
   log(pubkey, path, param, req, conn);
   if (!pubkey) return "no pubkey";
   if (path == "add") {
-    console.log("add", path)
     const post = param;
     const res = await posts.add(post);
     sendNotify(param.data.uuid, param.data.body);
-    console.log("res", res);
     return res;
   } else if (path == "get") {
     const p2 = await posts.get(id);
     return p2;
   } else if (path == "getLatest") {
     const lastdt = param;
-    console.log(lastdt);
     const latest = await posts.getLatest(lastdt);
     return latest;
   } else if (path == "subscribe") {
-    console.log("SUB", param);
     return subscribe(param);
   } else if (path == "unsubscribe") {
-    console.log("UNSUB", param);
     return unsubscribe(param);
     /*
   } else if (path == "push") {

@@ -42,7 +42,6 @@ export class Posts {
       for (let i = 0; i < latest.length; i++) {
         latest[i] = await posts.get(latest[i]);
       }
-    console.log("latest", latest);
       
       return posts;
     } catch (e) {
@@ -58,7 +57,6 @@ export class Posts {
   }
   getPathFromID(id) {
     const tai64n = TAI64N.parse(id);
-    console.log("path", id, "->", tai64n)
     const date = TAI64N.toDate(tai64n);
     const dt = new DateTime(date);
     const ymd = dt.toLocal(TIMEZONE).day.toStringYMD();
@@ -83,7 +81,7 @@ export class Posts {
     if (!lastdt) lastdt = TAI64N.stringify(TAI64N.fromYear(0));
     const res = this.latest.filter(i => i.data.id.localeCompare(lastdt) > 0);
     if (res.length) {
-      console.log(res, res.length, lastdt); // , res[0].data.id)
+      //console.log(res, res.length, lastdt); // , res[0].data.id)
     }
     return res;
   }
