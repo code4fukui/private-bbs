@@ -1,16 +1,15 @@
 body {
   font-family: sans-serif;
-  background: #fff0f5; /* 薄いピンク背景 */
+  background: #fafafa;
   margin: 0;
   padding: 0;
 }
 header {
-  background: #ffe4e9; /* 薄ピンク */
+  background: #fff;
   padding: 1rem;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
   text-align: center;
   font-weight: bold;
-  color: #d6336c; /* 落ち着いたピンク系文字色 */
 }
 .container {
   max-width: 600px;
@@ -20,45 +19,32 @@ header {
 .post-form {
   background: #fff;
   padding: 1rem;
-  border: 1px solid #f8c8d8;
+  border: 1px solid #ddd;
   margin-bottom: 2rem;
-  border-radius: 6px;
 }
+.post-form input[type="text"],
 .post-form textarea {
   font-size: 16px;
   width: 100%;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
-  border: 1px solid #f3a6c1;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  resize: vertical;
-  box-sizing: border-box;
-}
-header input[type="text"] {
-  font-size: 16px;
-  width: 5em;
-  margin-left: 2em;
-  padding: 0.4rem;
-  margin-right: 0.2rem;
-  border: 1px solid #f3a6c1;
-  border-radius: 4px;
+  resize: vertical; /* 横方向に拡大しない */
+  box-sizing: border-box; /* padding・border を含めたサイズに */
 }
 .post-form button {
-  background: #ff7da6; /* ピンクボタン */
+  background: #0095f6;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
 }
-.post-form button:hover:not(:disabled) {
-  background: #ff5c93;
-}
 .post {
   background: #fff;
-  border: 1px solid #f8c8d8;
+  border: 1px solid #ddd;
   margin-bottom: 2rem;
-  border-radius: 6px;
 }
 .post img {
   width: 100%;
@@ -69,7 +55,7 @@ header input[type="text"] {
   white-space: pre-wrap;
 }
 .comments {
-  border-top: 1px solid #f8c8d8;
+  border-top: 1px solid #eee;
   padding: 0.5rem 1rem;
 }
 .comment {
@@ -81,48 +67,37 @@ header input[type="text"] {
   width: 80%;
   padding: 0.4rem;
   margin-right: 0.2rem;
-  border: 1px solid #f3a6c1;
-  border-radius: 4px;
 }
 .add-comment button {
   padding: 0.4rem 0.8rem;
-  background: #ff7da6;
+  background: #0095f6;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
-.add-comment button:hover:not(:disabled) {
-  background: #ff5c93;
-}
-button:disabled {
-  background: gray;
-  cursor: not-allowed;
-}
 strong {
   display: inline-block;
   margin-right: 0.5em;
-  color: #d6336c;
 }
 .time {
   font-size: 85%;
-  color: #a7667f;
+  color: #777;
   margin-left: 1em;
 }
 a {
-  color: #d6336c;
+  color: gray;
 }
 footer {
   text-align: center;
   margin: .5em;
-  color: #a7667f;
 }
 
 /* toast */
 .toast {
   visibility: hidden;
   min-width: 220px;
-  background-color: #ff7da6; /* ピンク背景 */
+  background-color: #777;
   color: #fff;
   text-align: center;
   border-radius: 8px;
