@@ -1,2 +1,5 @@
 data/
 log/
+.env
+run.sh
+static/vapidPublicKey.txt

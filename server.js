@@ -2,6 +2,10 @@ import { makeFetch } from "https://code4fukui.github.io/PubkeyUser/serverutil.js
 import { Posts } from "./Posts.js";
 import { JSONLWriter } from "https://code4fukui.github.io/JSONL/JSONLWriter.js";
 import { DateTime, TimeZone } from "https://js.sabae.cc/DateTime.js";
+import { subscribe, unsubscribe, pushAll } from "https://code4fukui.github.io/tsuchichat/webpushutil.js";
+
+const settings = JSON.parse(await Deno.readTextFile("./static/settings.json"));
+const title = settings.title;
 
 const posts = await Posts.create();
 
@@ -16,6 +20,17 @@ const log = async (pubkey, path, param, req, conn) => {
   w.close();
 };
 
+const sendNotify = async (uuid, text) => {
+  if (!uuid) return;
+  const data = {
+    title,
+    body: text,
+    //timeout: 5000, // 通知を消すまでの長さ msec （デフォルト0:消さない）
+    //delay: 1000, // 表示するまでの時間 msec（デフォルト0）
+  };
+  await pushAll(uuid, data);
+};
+
 const api = async (path, param, pubkey, req, conn) => {
   //console.log("api", path, path == "add", param, pubkey)
   log(pubkey, path, param, req, conn);
@@ -24,6 +39,7 @@ const api = async (path, param, pubkey, req, conn) => {
     console.log("add", path)
     const post = param;
     const res = await posts.add(post);
+    sendNotify(param.data.uuid, param.data.body);
     console.log("res", res);
     return res;
   } else if (path == "get") {
@@ -34,6 +50,18 @@ const api = async (path, param, pubkey, req, conn) => {
     console.log(lastdt);
     const latest = await posts.getLatest(lastdt);
     return latest;
+  } else if (path == "subscribe") {
+    console.log("SUB", param);
+    return subscribe(param);
+  } else if (path == "unsubscribe") {
+    console.log("UNSUB", param);
+    return unsubscribe(param);
+    /*
+  } else if (path == "push") {
+    const uuid = param.uuid;
+    const data = param.data;
+    return pushAll(uuid, data);
+    */
   } else {
     console.log("path", path)
     return "not found";
