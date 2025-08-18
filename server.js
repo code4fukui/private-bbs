@@ -10,6 +10,7 @@ const title = settings.title;
 const posts = await Posts.create();
 
 const logdir = "log";
+await Deno.mkdir(logdir, { recursive: true });
 
 const log = async (pubkey, path, param, req, conn) => {
   const ua = req.headers.get("user-agent");
