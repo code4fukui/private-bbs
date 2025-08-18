@@ -6,7 +6,7 @@ self.addEventListener("push", e => {
   const id = new Date().getTime();
   data.data.id = id;
   const show = () => {
-    self.registration.showNotification(data.title, data);
+    e.waitUntil(self.registration.showNotification(data.title, data));
     if (timeout) {
       setTimeout(async () => {
         const ns = await self.registration.getNotifications();
