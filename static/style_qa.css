@@ -30,6 +30,10 @@ header {
   margin-bottom: 2rem;
   border-radius: 8px;
 }
+textarea {
+  resize: vertical; /* 横方向に拡大しない */
+  box-sizing: border-box; /* padding・border を含めたサイズに */
+}
 
 .post-form input[type="text"],
 .post-form textarea {
