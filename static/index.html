@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>BBS</title>
 <!--<link rel="stylesheet" href="style.css">-->
 </head><body>
@@ -83,7 +83,17 @@ if (!window["link_csssytle"]) {
   document.head.appendChild(csslink);
 }
 
-
+// 記入中本文を自動保存
+ta_body.onkeyup = () => {
+  localStorage.setItem("ta_body", ta_body.value);
+};
+const tabody = localStorage.getItem("ta_body");
+if (tabody) {
+  ta_body.value = tabody;
+}
+const clearBody = () => {
+  localStorage.setItem("ta_body", "");
+};
 
 const u = new PubkeyUser();
 
@@ -279,6 +289,7 @@ btn_post.onclick = async (e) => {
   if (!body) return;
   if (await sendPost(body)) {
     ta_body.value = "";
+    clearBody();
     showToast("投稿しました");
     await show();
   }
