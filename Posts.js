@@ -17,8 +17,8 @@ import { CachedMap } from "https://code4fukui.github.io/CachedMap/CachedMap.js";
 
 const basedir = "data/";
 
-const LATEST_N = 50;
-const CACHE_N = 1000;
+const LATEST_N = 500;
+const CACHE_N = 10000;
 const TIMEZONE = TimeZone.JST;
 
 export class Posts {
