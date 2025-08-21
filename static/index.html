@@ -72,6 +72,7 @@ import { DateTime } from "https://js.sabae.cc/DateTime.js";
 import { showToast } from "./showToast.js";
 //import { WebPush } from "https://code4fukui.github.io/tsuchichat/static/WebPush.js";
 import { WebPush } from "./WebPush.js";
+import { makeTextWithLink } from "./makeTextWithLink.js";
 
 const settings = await (await fetch("./settings.json")).json();
 document.title = title.textContent = settings.title;
@@ -228,8 +229,9 @@ const makePost = (post) => {
   st.title = post.data.pubkey;
   //st.textContent = post.data.pubkey.substring(0, 4);
   div2.appendChild(st);
-  const txt = document.createTextNode(post.data.body);
-  div2.appendChild(txt);
+  const body = document.createElement("span");
+  body.innerHTML = makeTextWithLink(post.data.body);
+  div2.appendChild(body);
   const dt = document.createElement("span");
   dt.className = "time";
   dt.textContent = time(post.data.id);
@@ -249,8 +251,9 @@ const makePost = (post) => {
     st.title = item.data.pubkey;
     //st.textContent = item.data.pubkey.substring(0, 4);
     divc.appendChild(st);
-    const text = document.createTextNode(item.data.body);
-    divc.appendChild(text);
+    const body = document.createElement("span");
+    body.innerHTML = makeTextWithLink(item.data.body);
+    divc.appendChild(body);
     const dt = document.createElement("span");
     dt.className = "time";
     dt.textContent = time(item.data.id);
