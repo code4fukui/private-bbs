@@ -228,8 +228,9 @@ const makePost = (post) => {
   st.title = post.data.pubkey;
   //st.textContent = post.data.pubkey.substring(0, 4);
   div2.appendChild(st);
-  const body = document.createElement("div");
+  const body = document.createElement("span");
   body.innerHTML = makeTextWithLink(post.data.body);
+  div2.appendChild(body);
   const dt = document.createElement("span");
   dt.className = "time";
   dt.textContent = time(post.data.id);
@@ -249,8 +250,9 @@ const makePost = (post) => {
     st.title = item.data.pubkey;
     //st.textContent = item.data.pubkey.substring(0, 4);
     divc.appendChild(st);
-    const text = document.createTextNode(item.data.body);
-    divc.appendChild(text);
+    const body = document.createElement("span");
+    body.innerHTML = makeTextWithLink(item.data.body);
+    divc.appendChild(body);
     const dt = document.createElement("span");
     dt.className = "time";
     dt.textContent = time(item.data.id);
