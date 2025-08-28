@@ -6,6 +6,7 @@
 </head><body>
 
 <header><h1 id="title">BBS</h1>
+<span id=spanroom></span>
 <input type="text" id="in_name" placeholder="名前">
 <span id=spannotify>🔔<span id=spannotifyswitch>OFF</span></span>
 <span id=spanreload style="padding-left: 1em;">🔃</span>
@@ -85,6 +86,21 @@ if (!window["link_csssytle"]) {
   document.head.appendChild(csslink);
 }
 
+let selroom = null;
+if (settings.rooms && settings.rooms.length > 0) {
+  const sel = document.createElement("select");
+  spanroom.appendChild(sel);
+  for (const room of settings.rooms) {
+    const opt = document.createElement("option");
+    opt.textContent = room;
+    sel.appendChild(opt);
+  }
+  selroom = sel;
+}
+const getRoom = () => {
+  return selroom ? selroom.value : undefined;
+};
+
 // 記入中本文を自動保存
 ta_body.onkeyup = () => {
   localStorage.setItem("ta_body", ta_body.value);
@@ -132,10 +148,9 @@ spannotify.onclick = async () => {
 let data = [];
 
 let lastdt = null;
+let bklist = null;
 
 const show = async () => {
-  posts.innerHTML = "";
-
   const res = await u.fetch("getLatest", lastdt);
   for (const item of res) {
     if (!lastdt) {
@@ -163,7 +178,28 @@ const show = async () => {
     item.latest = latest(item);
   }
   list.sort((a, b) => b.latest.localeCompare(a.latest));
+  //console.log(list);
+  bklist = list;
+
+  reshow();
+};
+
+const reshow = async () => {
+  const list = bklist;
+  if (!list) return;
+
+  const room = getRoom();
+  const firstroom = selroom?.selectedIndex == 0;
+
+  posts.innerHTML = "";
   for (const item of list) {
+    if (room) {
+      if (item.data.room) {
+        if (item.data.room != room) continue;
+      } else {
+        if (!firstroom) continue;
+      }
+    }
     const div = makePost(item);
     posts.appendChild(div);
   }
@@ -178,6 +214,7 @@ const sendPost = async (body, parent = null) => {
     return;
   }
   localStorage.setItem("name", name);
+  const room = getRoom();
 
   const id = TAI64N.stringify(TAI64N.encode(new Date()));
   const data = {
@@ -188,6 +225,7 @@ const sendPost = async (body, parent = null) => {
     body,
     tags: [],
     uuid,
+    room,
   };
   const post = Post.create(data, Coder.decode(u.prikey));
   try {
@@ -199,6 +237,10 @@ const sendPost = async (body, parent = null) => {
     return null;
   }
 };
+
+if (selroom) {
+  selroom.onchange = () => reshow();
+}
 
 const getComments = (post) => {
   const com = data.filter(i => post.data.id == i.data.parent);

@@ -22,10 +22,10 @@ const log = async (pubkey, path, param, req, conn) => {
   w.close();
 };
 
-const sendNotify = async (uuid, text) => {
+const sendNotify = async (uuid, text, room) => {
   if (!uuid) return;
   const data = {
-    title,
+    title: room ? room + " - " + title : title,
     body: text,
     icon,
     //timeout: 5000, // 通知を消すまでの長さ msec （デフォルト0:消さない）
@@ -41,7 +41,7 @@ const api = async (path, param, pubkey, req, conn) => {
   if (path == "add") {
     const post = param;
     const res = await posts.add(post);
-    sendNotify(param.data.uuid, param.data.body);
+    sendNotify(param.data.uuid, param.data.body, param.data.room);
     return res;
   } else if (path == "get") {
     const p2 = await posts.get(id);

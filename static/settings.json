@@ -1,5 +1,6 @@
 {
   "title": "ナースケットBBS",
   "css": "style_nurseket.css",
-  "icon": "https://nurseket-bbs.sabae.cc/icon.png"
+  "icon": "https://nurseket-bbs.sabae.cc/icon.png",
+  "rooms": ["総合", "企業保健室"]
 }
