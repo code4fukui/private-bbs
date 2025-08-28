@@ -1,4 +1,5 @@
 {
   "title": "PRIVATE BBS",
-  "css": "style.css"
+  "css": "style.css",
+  "rooms": ["総合", "分室A", "分室B"]
 }

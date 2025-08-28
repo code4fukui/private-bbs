@@ -11,6 +11,9 @@ header {
   text-align: center;
   font-weight: bold;
 }
+header select {
+  font-size: 16px;
+}
 .container {
   max-width: 600px;
   margin: 1rem auto;
