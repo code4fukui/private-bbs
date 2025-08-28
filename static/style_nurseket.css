@@ -72,8 +72,8 @@ header input[type="text"] {
   background-color: #ffd7f0;
   word-break: break-all;
 }
-.time {
-  padding-right: .3em;
+.icon {
+  padding: 0 .2em;
 }
 .comments {
   border-top: 1px solid #f8c8d8;
