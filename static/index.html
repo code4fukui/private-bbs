@@ -289,7 +289,7 @@ const makePost = (post) => {
     remspan.textContent = "🗑️";
     return remspan;
   };
-  if (post.data.uuid == uuid) {
+  if (post.data.pubkey == u.pubkey) {
     const remspan = createRemoveIcon();
     remspan.onclick = async () => {
       if (confirm("この投稿を削除しますか？付いているコメントも非表示になります")) {
@@ -326,7 +326,7 @@ const makePost = (post) => {
     divc.appendChild(dt);
 
     // remove icon
-    if (item.data.uuid == uuid) {
+    if (item.data.pubkey == u.pubkey) {
       const remspan = createRemoveIcon();
       remspan.onclick = async () => {
         if (confirm("このコメントを削除しますか？")) {
