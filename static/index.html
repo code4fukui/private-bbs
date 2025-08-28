@@ -283,11 +283,37 @@ const makePost = (post) => {
   dt.className = "time";
   dt.textContent = time(post.data.id);
   div2.appendChild(dt);
+  // like
+  const createLikeIcon = (likelist) => {
+    const span = document.createElement("span");
+    span.className = "icon";
+    const liked = likelist.find(i => i.data.pubkey == u.pubkey) != null;
+    span.textContent = (liked ? "♥️" : "🤍") + (likelist.length ? likelist.length : "");
+    if (likelist.length) {
+      span.title = likelist.map(i => i.data.name + " " + time(i.data.id)).join("\n");
+    }
+    return span;
+  };
+
+  const likelist = data.filter(i => i.data.action == "like" && i.data.parent == post.data.id);
+  const likespan = createLikeIcon(likelist);
+  likespan.onclick = async () => {
+    const parent = post.data.id;
+    if (likelist.find(i => i.data.pubkey == u.pubkey) == null) {
+      if (await sendPost(null, parent, "like")) {
+        showToast("いいねしました");
+        likespan.textContent = "♥️" + (likelist.length + 1);
+        likespan.onclick = null;
+      }
+    }
+  };
+  div2.appendChild(likespan);
   // remove
   const createRemoveIcon = () => {
-    const remspan = document.createElement("span");
-    remspan.textContent = "🗑️";
-    return remspan;
+    const span = document.createElement("span");
+    span.className = "icon";
+    span.textContent = "🗑️";
+    return span;
   };
   if (post.data.pubkey == u.pubkey) {
     const remspan = createRemoveIcon();
@@ -310,6 +336,8 @@ const makePost = (post) => {
 
   const comments = getComments(post);
   for (const item of comments) {
+    if (item.data.action) continue;
+
     const divc = document.createElement("div");
     divc.className = "comment";
     const st = document.createElement("strong");
@@ -324,6 +352,21 @@ const makePost = (post) => {
     dt.className = "time";
     dt.textContent = time(item.data.id);
     divc.appendChild(dt);
+
+    // like icon
+    const likelist = data.filter(i => i.data.action == "like" && i.data.parent == item.data.id);
+    const likespan = createLikeIcon(likelist);
+    likespan.onclick = async () => {
+      const parent = item.data.id;
+      if (likelist.find(i => i.data.pubkey == u.pubkey) == null) {
+        if (await sendPost(null, parent, "like")) {
+          showToast("いいねしました");
+          likespan.textContent = "♥️" + (likelist.length + 1);
+          likespan.onclick = null;
+        }
+      }
+    };
+    divc.appendChild(likespan);
 
     // remove icon
     if (item.data.pubkey == u.pubkey) {
