@@ -35,8 +35,8 @@ header {
   box-sizing: border-box;
 }
 header input[type="text"], header select {
+  background-color: white;
   font-size: 16px;
-  margin-left: 2em;
   padding: 0.4rem;
   margin-right: 0.2rem;
   border: 1px solid #f3a6c1;
