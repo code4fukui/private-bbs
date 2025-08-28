@@ -163,7 +163,9 @@ const show = async () => {
   }
   res.forEach(i => data.unshift(i));
 
-  const list = data.filter(i => !i.data.parent);
+  const remlist = data.filter(i => i.data.action == "remove").map(i => i.data.parent);
+
+  const list = data.filter(i => !remlist.includes(i.data.id) && !i.data.parent);
   const latest = (item) => {
     let max = item.data.id;
     const chs = data.filter(i => i.data.parent == item.data.id);
@@ -207,7 +209,7 @@ const reshow = async () => {
 
 in_name.value = localStorage.getItem("name") || "";
 
-const sendPost = async (body, parent = null) => {
+const sendPost = async (body, parent = null, action = undefined) => {
   const name = in_name.value;
   if (!name) {
     alert("名前をご記入ください");
@@ -226,6 +228,7 @@ const sendPost = async (body, parent = null) => {
     tags: [],
     uuid,
     room,
+    action,
   };
   const post = Post.create(data, Coder.decode(u.prikey));
   try {
@@ -245,7 +248,9 @@ if (selroom) {
 const getComments = (post) => {
   const com = data.filter(i => post.data.id == i.data.parent);
   com.sort((a, b) => a.data.id.localeCompare(b.data.id));
-  return com;
+  const remlist = data.filter(i => i.data.action == "remove").map(i => i.data.parent);
+  const com2 = com.filter(i => !remlist.includes(i.data.id));
+  return com2;
 };
 
 const time = (tai64n) => {
@@ -278,6 +283,25 @@ const makePost = (post) => {
   dt.className = "time";
   dt.textContent = time(post.data.id);
   div2.appendChild(dt);
+  // remove
+  const createRemoveIcon = () => {
+    const remspan = document.createElement("span");
+    remspan.textContent = "🗑️";
+    return remspan;
+  };
+  if (post.data.uuid == uuid) {
+    const remspan = createRemoveIcon();
+    remspan.onclick = async () => {
+      if (confirm("この投稿を削除しますか？付いているコメントも非表示になります")) {
+        const parent = post.data.id;
+        if (await sendPost(null, parent, "remove")) {
+          showToast("削除しました");
+          await show();
+        }
+      }
+    };
+    div2.appendChild(remspan);
+  }
   
   // comments
   const com = document.createElement("div");
@@ -300,6 +324,22 @@ const makePost = (post) => {
     dt.className = "time";
     dt.textContent = time(item.data.id);
     divc.appendChild(dt);
+
+    // remove icon
+    if (item.data.uuid == uuid) {
+      const remspan = createRemoveIcon();
+      remspan.onclick = async () => {
+        if (confirm("このコメントを削除しますか？")) {
+          const parent = item.data.id;
+          if (await sendPost(null, parent, "remove")) {
+            showToast("削除しました");
+            await show();
+          }
+        }
+      };
+      divc.appendChild(remspan);
+    }
+
     com.appendChild(divc);
   }
   // comments form
