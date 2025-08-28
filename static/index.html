@@ -5,6 +5,7 @@
 </head><body>
 
 <header><h1 id="title">BBS</h1>
+<span id=spanroom></span>
 <input type="text" id="in_name" placeholder="名前">
 <span id=spannotify>🔔<span id=spannotifyswitch>OFF</span></span>
 <span id=spanreload style="padding-left: 1em;">🔃</span>
@@ -84,6 +85,21 @@ if (!window["link_csssytle"]) {
   document.head.appendChild(csslink);
 }
 
+let selroom = null;
+if (settings.rooms && settings.rooms.length > 0) {
+  const sel = document.createElement("select");
+  spanroom.appendChild(sel);
+  for (const room of settings.rooms) {
+    const opt = document.createElement("option");
+    opt.textContent = room;
+    sel.appendChild(opt);
+  }
+  selroom = sel;
+}
+const getRoom = () => {
+  return selroom ? selroom.value : undefined;
+};
+
 // 記入中本文を自動保存
 ta_body.onkeyup = () => {
   localStorage.setItem("ta_body", ta_body.value);
@@ -131,10 +147,9 @@ spannotify.onclick = async () => {
 let data = [];
 
 let lastdt = null;
+let bklist = null;
 
 const show = async () => {
-  posts.innerHTML = "";
-
   const res = await u.fetch("getLatest", lastdt);
   for (const item of res) {
     if (!lastdt) {
@@ -147,7 +162,9 @@ const show = async () => {
   }
   res.forEach(i => data.unshift(i));
 
-  const list = data.filter(i => !i.data.parent);
+  const remlist = data.filter(i => i.data.action == "remove").map(i => i.data.parent);
+
+  const list = data.filter(i => !remlist.includes(i.data.id) && !i.data.parent);
   const latest = (item) => {
     let max = item.data.id;
     const chs = data.filter(i => i.data.parent == item.data.id);
@@ -162,7 +179,28 @@ const show = async () => {
     item.latest = latest(item);
   }
   list.sort((a, b) => b.latest.localeCompare(a.latest));
+  //console.log(list);
+  bklist = list;
+
+  reshow();
+};
+
+const reshow = async () => {
+  const list = bklist;
+  if (!list) return;
+
+  const room = getRoom();
+  const firstroom = selroom?.selectedIndex == 0;
+
+  posts.innerHTML = "";
   for (const item of list) {
+    if (room) {
+      if (item.data.room) {
+        if (item.data.room != room) continue;
+      } else {
+        if (!firstroom) continue;
+      }
+    }
     const div = makePost(item);
     posts.appendChild(div);
   }
@@ -170,13 +208,14 @@ const show = async () => {
 
 in_name.value = localStorage.getItem("name") || "";
 
-const sendPost = async (body, parent = null) => {
+const sendPost = async (body, parent = null, action = undefined) => {
   const name = in_name.value;
   if (!name) {
     alert("名前をご記入ください");
     return;
   }
   localStorage.setItem("name", name);
+  const room = getRoom();
 
   const id = TAI64N.stringify(TAI64N.encode(new Date()));
   const data = {
@@ -187,6 +226,8 @@ const sendPost = async (body, parent = null) => {
     body,
     tags: [],
     uuid,
+    room,
+    action,
   };
   const post = Post.create(data, Coder.decode(u.prikey));
   try {
@@ -199,10 +240,16 @@ const sendPost = async (body, parent = null) => {
   }
 };
 
+if (selroom) {
+  selroom.onchange = () => reshow();
+}
+
 const getComments = (post) => {
   const com = data.filter(i => post.data.id == i.data.parent);
   com.sort((a, b) => a.data.id.localeCompare(b.data.id));
-  return com;
+  const remlist = data.filter(i => i.data.action == "remove").map(i => i.data.parent);
+  const com2 = com.filter(i => !remlist.includes(i.data.id));
+  return com2;
 };
 
 const time = (tai64n) => {
@@ -235,6 +282,51 @@ const makePost = (post) => {
   dt.className = "time";
   dt.textContent = time(post.data.id);
   div2.appendChild(dt);
+  // like
+  const createLikeIcon = (likelist) => {
+    const span = document.createElement("span");
+    span.className = "icon";
+    const liked = likelist.find(i => i.data.pubkey == u.pubkey) != null;
+    span.textContent = (liked ? "♥️" : "🤍") + (likelist.length ? likelist.length : "");
+    if (likelist.length) {
+      span.title = likelist.map(i => i.data.name + " " + time(i.data.id)).join("\n");
+    }
+    return span;
+  };
+
+  const likelist = data.filter(i => i.data.action == "like" && i.data.parent == post.data.id);
+  const likespan = createLikeIcon(likelist);
+  likespan.onclick = async () => {
+    const parent = post.data.id;
+    if (likelist.find(i => i.data.pubkey == u.pubkey) == null) {
+      if (await sendPost(null, parent, "like")) {
+        showToast("いいねしました");
+        likespan.textContent = "♥️" + (likelist.length + 1);
+        likespan.onclick = null;
+      }
+    }
+  };
+  div2.appendChild(likespan);
+  // remove
+  const createRemoveIcon = () => {
+    const span = document.createElement("span");
+    span.className = "icon";
+    span.textContent = "🗑️";
+    return span;
+  };
+  if (post.data.pubkey == u.pubkey) {
+    const remspan = createRemoveIcon();
+    remspan.onclick = async () => {
+      if (confirm("この投稿を削除しますか？付いているコメントも非表示になります")) {
+        const parent = post.data.id;
+        if (await sendPost(null, parent, "remove")) {
+          showToast("削除しました");
+          await show();
+        }
+      }
+    };
+    div2.appendChild(remspan);
+  }
   
   // comments
   const com = document.createElement("div");
@@ -243,6 +335,8 @@ const makePost = (post) => {
 
   const comments = getComments(post);
   for (const item of comments) {
+    if (item.data.action) continue;
+
     const divc = document.createElement("div");
     divc.className = "comment";
     const st = document.createElement("strong");
@@ -257,6 +351,37 @@ const makePost = (post) => {
     dt.className = "time";
     dt.textContent = time(item.data.id);
     divc.appendChild(dt);
+
+    // like icon
+    const likelist = data.filter(i => i.data.action == "like" && i.data.parent == item.data.id);
+    const likespan = createLikeIcon(likelist);
+    likespan.onclick = async () => {
+      const parent = item.data.id;
+      if (likelist.find(i => i.data.pubkey == u.pubkey) == null) {
+        if (await sendPost(null, parent, "like")) {
+          showToast("いいねしました");
+          likespan.textContent = "♥️" + (likelist.length + 1);
+          likespan.onclick = null;
+        }
+      }
+    };
+    divc.appendChild(likespan);
+
+    // remove icon
+    if (item.data.pubkey == u.pubkey) {
+      const remspan = createRemoveIcon();
+      remspan.onclick = async () => {
+        if (confirm("このコメントを削除しますか？")) {
+          const parent = item.data.id;
+          if (await sendPost(null, parent, "remove")) {
+            showToast("削除しました");
+            await show();
+          }
+        }
+      };
+      divc.appendChild(remspan);
+    }
+
     com.appendChild(divc);
   }
   // comments form
