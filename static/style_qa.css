@@ -141,6 +141,9 @@ strong {
   color: #888;
   margin-left: 1em;
 }
+.icon {
+  margin: 0 0.2em;
+}
 a {
   color: #333;
   text-decoration: none;
