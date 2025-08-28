@@ -1,5 +1,6 @@
 {
   "title": "PRIVATE BBS",
   "css": "style.css",
+  "url": "http://localhost/",
   "rooms": ["総合", "分室A", "分室B"]
 }

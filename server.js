@@ -6,6 +6,7 @@ import { subscribe, unsubscribe, pushAll } from "https://code4fukui.github.io/ts
 
 const settings = JSON.parse(await Deno.readTextFile("./static/settings.json"));
 const title = settings.title;
+const url = settings.url;
 
 const posts = await Posts.create();
 
@@ -26,6 +27,7 @@ const sendNotify = async (uuid, text, room) => {
   const data = {
     title: room ? room + " - " + title : title,
     body: text,
+    data: { url: url + "#" + encodeURIComponent(room) },
     //timeout: 5000, // 通知を消すまでの長さ msec （デフォルト0:消さない）
     //delay: 1000, // 表示するまでの時間 msec（デフォルト0）
   };
