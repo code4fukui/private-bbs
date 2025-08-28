@@ -57,6 +57,9 @@ header select {
   padding: 1rem;
   white-space: pre-wrap;
 }
+.time {
+  padding-right: .3em;
+}
 .comments {
   border-top: 1px solid #eee;
   padding: 0.5rem 1rem;
