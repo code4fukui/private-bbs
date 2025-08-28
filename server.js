@@ -41,7 +41,9 @@ const api = async (path, param, pubkey, req, conn) => {
   if (path == "add") {
     const post = param;
     const res = await posts.add(post);
-    sendNotify(param.data.uuid, param.data.body, param.data.room);
+    if (param.data.action != "remove" && param.data.action != "like") {
+      sendNotify(param.data.uuid, param.data.body, param.data.room);
+    }
     return res;
   } else if (path == "get") {
     const p2 = await posts.get(id);
