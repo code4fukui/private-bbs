@@ -34,14 +34,16 @@ header {
   resize: vertical;
   box-sizing: border-box;
 }
-header input[type="text"] {
+header input[type="text"], header select {
   font-size: 16px;
-  width: 5em;
   margin-left: 2em;
   padding: 0.4rem;
   margin-right: 0.2rem;
   border: 1px solid #f3a6c1;
   border-radius: 4px;
+}
+header input[type="text"] {
+  width: 5em;
 }
 .post-form button {
   background: #ff7da6; /* ピンクボタン */
