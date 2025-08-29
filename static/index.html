@@ -75,7 +75,7 @@ import { showToast } from "./showToast.js";
 import { WebPush } from "./WebPush.js";
 import { makeTextWithLink } from "./makeTextWithLink.js";
 
-const settings = await (await fetch("./settings.json")).json();
+const settings = await (await fetch("./settings.json?2")).json();
 document.title = title.textContent = settings.title;
 const cssstyle2 = settings.css || "style.css";
 localStorage.setItem("cssstyle", cssstyle2);
