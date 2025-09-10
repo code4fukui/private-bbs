@@ -75,9 +75,11 @@ import { showToast } from "./showToast.js";
 import { WebPush } from "./WebPush.js";
 import { makeTextWithLink } from "./makeTextWithLink.js";
 
-const settings = await (await fetch("./settings.json?3")).json();
+const version = 4;
+
+const settings = await (await fetch("./settings.json?" + version)).json();
 document.title = title.textContent = settings.title;
-const cssstyle2 = settings.css || "style.css";
+const cssstyle2 = (settings.css || "style.css") + "?" + version;
 localStorage.setItem("cssstyle", cssstyle2);
 if (!window["link_csssytle"]) {
   const csslink = document.createElement("link");
