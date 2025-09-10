@@ -82,15 +82,18 @@ header input[type="text"] {
 .comment {
   margin-bottom: 0.5rem;
   font-size: 0.9em;
+  white-space: pre-wrap;
   word-break: break-all;
 }
-.add-comment input[type="text"] {
+.add-comment input[type="text"], .add-comment textarea {
   font-size: 16px;
   width: 80%;
   padding: 0.4rem;
   margin-right: 0.2rem;
   border: 1px solid #f3a6c1;
   border-radius: 4px;
+  height: 1.2em;
+  vertical-align: top;
 }
 .add-comment button {
   padding: 0.4rem 0.8rem;

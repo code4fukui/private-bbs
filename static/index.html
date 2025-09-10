@@ -389,8 +389,8 @@ const makePost = (post) => {
   const divcs = document.createElement("div");
   divcs.className = "add-comment";
   com.appendChild(divcs);
-  const inp = document.createElement("input");
-  inp.type = "text";
+  const inp = document.createElement("textarea");
+  //inp.type = "text";
   inp.placeholder = "コメントを書く...";
   divcs.appendChild(inp);
   const btn = document.createElement("button");
