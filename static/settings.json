@@ -3,5 +3,5 @@
   "css": "style_nurseket.css",
   "icon": "https://nurseket-bbs.sabae.cc/icon.png",
   "url": "https://nurseket-bbs.sabae.cc/",
-  "rooms": ["メイン", "ファージ", "骨粗鬆症", "企業保健室", "企業保健室A", "企業保健室B", "企業保健室C", "アフラック", "労務", "雑談"]
+  "rooms": ["メイン", "ファージ", "骨粗鬆症", "企業保健室", "企業保健室A", "企業保健室B", "企業保健室C", "アフラック", "労務", "勉強会", "雑談"]
 }

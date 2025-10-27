@@ -75,7 +75,7 @@ import { showToast } from "./showToast.js";
 import { WebPush } from "./WebPush.js";
 import { makeTextWithLink } from "./makeTextWithLink.js";
 
-const version = 5;
+const version = 6;
 
 const settings = await (await fetch("./settings.json?" + version)).json();
 document.title = title.textContent = settings.title;
