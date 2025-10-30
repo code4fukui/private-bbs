@@ -12,19 +12,22 @@ header {
   font-weight: bold;
   color: #d6336c; /* 落ち着いたピンク系文字色 */
 }
+h2 {
+  color: #d6336c; /* 落ち着いたピンク系文字色 */
+}
 .container {
   max-width: 600px;
   margin: 1rem auto;
   padding: 0 1rem;
 }
-.post-form {
+.post-form, .usermanager {
   background: #fff;
   padding: 1rem;
   border: 1px solid #f8c8d8;
   margin-bottom: 2rem;
   border-radius: 6px;
 }
-.post-form textarea {
+.post-content textarea, .post-form textarea {
   font-size: 16px;
   width: 100%;
   padding: 0.5rem;
@@ -34,7 +37,7 @@ header {
   resize: vertical;
   box-sizing: border-box;
 }
-header input[type="text"], header select {
+header input[type="text"], header select, #div_usermanager input[type="text"] {
   background-color: white;
   font-size: 16px;
   padding: 0.4rem;
@@ -42,10 +45,13 @@ header input[type="text"], header select {
   border: 1px solid #f3a6c1;
   border-radius: 4px;
 }
+#div_usermanager > * {
+  margin: .2em 0;
+}
 header input[type="text"] {
   width: 5em;
 }
-.post-form button {
+.container button {
   background: #ff7da6; /* ピンクボタン */
   color: white;
   border: none;
@@ -53,7 +59,7 @@ header input[type="text"] {
   border-radius: 4px;
   cursor: pointer;
 }
-.post-form button:hover:not(:disabled) {
+.container button:hover:not(:disabled) {
   background: #ff5c93;
 }
 .post {

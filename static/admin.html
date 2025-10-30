@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="./icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<title>BBS管理</title>
+<!--<link rel="stylesheet" href="style.css">-->
+</head><body>
+
+<header>
+  <h1 id="title">BBS管理</h1>
+</header>
+
+<div class="container" id="div_container">
+  <h2>許可待ちリスト</h2>
+  <div id="div_requested"></div>
+  <h2>許可済みリスト</h2>
+  <div id="div_allowed"></div>
+</div>
+
+<footer>
+<div><a href=https://github.com/code4fukui/private-bbs/>src on GitHub</a></div>
+</footer>
+
+<script>
+const cssstyle = localStorage.getItem("cssstyle");
+if (cssstyle) {
+  document.write(`<link rel="stylesheet" href="${cssstyle}" id="link_csssytle">`);
+}
+/* // ちらつく
+if (cssstyle) {
+  const csslink = document.createElement("link");
+  csslink.rel = "stylesheet";
+  csslink.href = cssstyle;
+  csslink.id = "link_csssytle";
+  document.head.appendChild(csslink);
+}
+*/
+</script>
+
+<style>
+#div_container button {
+  margin: 0.2em .2em;
+}
+td, th {
+  background-color: white;
+  padding: .2em .5em;
+}
+</style>
+
+<script type="module">
+import { CSV } from "https://js.sabae.cc/CSV.js";
+import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/PubkeyUser.js";
+
+const u = new PubkeyUser();
+
+const version = 6;
+
+const settings = await (await fetch("./settings.json?" + version)).json();
+document.title = title.textContent = settings.title;
+const cssstyle2 = (settings.css || "style.css") + "?" + version;
+localStorage.setItem("cssstyle", cssstyle2);
+if (!window["link_csssytle"]) {
+  const csslink = document.createElement("link");
+  csslink.rel = "stylesheet";
+  csslink.href = cssstyle2;
+  document.head.appendChild(csslink);
+}
+
+//
+const makeTable = (csv) => {
+  const c = (tag) => document.createElement(tag);
+  const tbl = c("table");
+  const tr0 = c("tr");
+  tbl.appendChild(tr0);
+  for (let i = 0; i < csv[0].length; i++) {
+    const th = c("th");
+    tr0.appendChild(th);
+    th.textContent = csv[0][i];
+  }
+  for (let i = 1; i < csv.length; i++) {
+    const tr = c("tr");
+    tbl.appendChild(tr);
+    for (let j = 0; j < csv[i].length; j++) {
+      const td = c("td");
+      tr.appendChild(td);
+      const s = csv[i][j];
+      if (typeof s == "string" && (s.startsWith("http://") || s.startsWith("https://"))) {
+        const a = c("a");
+        a.href = a.textContent = s;
+        td.appendChild(a);
+      } else if (typeof s == "object") {
+        td.appendChild(s);
+      } else {
+        td.textContent = s;
+      }
+    }
+  }
+  return tbl;
+};
+
+const show = async () => {
+  const res = await u.fetch("user_requestusers");
+  console.log(res);
+  const list = res.map(i => {
+    const btns = document.createElement("div");
+    const btn = document.createElement("button");
+    btn.textContent = "許可";
+    btns.appendChild(btn);
+    btn.onclick = async () => {
+      const res = await u.fetch("user_allow", {
+        pubkey: i.pubkey,
+      });
+      if (res.result == "ok") {
+        alert("許可しました");
+      } else {
+        alert("許可失敗しました。管理者にご連絡ください。");
+      }
+      location.reload();
+    };
+    const btn2 = document.createElement("button");
+    btn2.textContent = "却下";
+    btn2.onclick = async () => {
+      const res = await u.fetch("user_reject", {
+        pubkey: i.pubkey,
+      });
+      if (res.result == "ok") {
+        alert("却下しました");
+      } else {
+        alert("却下失敗しました。管理者にご連絡ください。");
+      }
+      location.reload();
+    };
+    btns.appendChild(btn2);
+    return {
+      "名前": i.name,
+      "合言葉": i.secret,
+      "公開鍵": i.pubkey.substring(0, 9) + "...",
+      "操作": btns,
+    };
+  });
+  div_requested.appendChild(makeTable(CSV.fromJSON(list)));
+};
+
+const show2 = async () => {
+  const res = await u.fetch("user_allowedusers");
+  console.log(res);
+  const list = res.map(i => {
+    const btns = document.createElement("div");
+    const btn = document.createElement("button");
+    btn.textContent = "削除";
+    btns.appendChild(btn);
+    btn.onclick = async () => {
+      const res = await u.fetch("user_remove", {
+        pubkey: i.pubkey,
+      });
+      if (res.result == "ok") {
+        alert("削除しました");
+      } else {
+        alert("削除失敗しました。管理者にご連絡ください。");
+      }
+      location.reload();
+    };
+    return {
+      "名前": i.name,
+      "合言葉": i.secret,
+      "公開鍵": i.pubkey.substring(0, 9) + "...",
+      "操作": btns,
+    };
+  });
+  div_allowed.appendChild(makeTable(CSV.fromJSON(list)));
+};
+await show();
+await show2();
+
+</script>
+</body></html>

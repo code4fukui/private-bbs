@@ -5,15 +5,25 @@
 <!--<link rel="stylesheet" href="style.css">-->
 </head><body>
 
-<header><h1 id="title">BBS</h1>
-<span id=spanroom></span>
-<input type="text" id="in_name" placeholder="名前">
-<span id=spannotify>🔔<span id=spannotifyswitch>OFF</span></span>
-<span id=spanreload style="padding-left: 1em;">🔃</span>
+<header>
+  <h1 id="title">BBS</h1>
+  <div id="div_header">
+    <span id=spanroom></span>
+    <input type="text" id="in_name" placeholder="名前">
+    <span id=spannotify>🔔<span id=spannotifyswitch>OFF</span></span>
+    <span id=spanreload style="padding-left: 1em;">🔃</span>
+  </div>
 </header>
 
 <div class="container" id="div_container">
-  <div class="post-form">
+  <div class="usermanager" id="div_usermanager" style="display: none">
+    <input type="text" id="in_name2" placeholder="名前"><br>
+    <input type="text" id="in_device" placeholder="デバイス"><br>
+    <input type="text" id="in_secret" placeholder="合言葉"><br>
+    <button id="btn_adduser">アクセス権を申請</button>
+  </div>
+
+  <div class="post-form" id="div_postform">
     <h2>新規投稿</h2>
     <textarea id="ta_body" placeholder="本文をどうぞ！" rows="3" required></textarea>
     <button id="btn_post">投稿する</button>
@@ -154,6 +164,24 @@ let bklist = null;
 
 const show = async () => {
   const res = await u.fetch("getLatest", lastdt);
+  console.log(res)
+  if (res.error == "not allowed") {
+    div_postform.style.display = "none";
+    div_usermanager.style.display = "block";
+    div_header.style.display = "none";
+    btn_adduser.onclick = async () => {
+      const res = await u.fetch("user_add", {
+        name: in_name2.value + "(" + in_device.value + ")",
+        secret: in_secret.value,
+      });
+      if (res.result == "ok") {
+        alert("アクセス権を申請しました。許可されるまでお待ちください。");
+      } else {
+        alert("アクセス権の申請に失敗しました。管理者にご連絡ください。");
+      }
+    };
+    return;
+  }
   for (const item of res) {
     if (!lastdt) {
       lastdt = item.data.id;
