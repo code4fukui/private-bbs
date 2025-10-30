@@ -318,10 +318,20 @@ const makePost = (post) => {
     const span = document.createElement("span");
     span.className = "icon";
     const liked = likelist.find(i => i.data.pubkey == u.pubkey) != null;
-    span.textContent = (liked ? "♥️" : "🤍") + (likelist.length ? likelist.length : "");
+    const span1 = document.createElement("span");
+    span1.textContent = (liked ? "♥️" : "🤍") + " ";
+    const span2 = document.createElement("span");
+    span2.textContent = (likelist.length ? likelist.length : "");
+    span.appendChild(span1);
+    span.appendChild(span2);
+    const likeusers = likelist.map(i => i.data.name + " " + time(i.data.id)).join("\n");
     if (likelist.length) {
-      span.title = likelist.map(i => i.data.name + " " + time(i.data.id)).join("\n");
+      span.title = likeusers;
     }
+    span2.onclick = (e) => {
+      alert(likeusers);
+      e.stopPropagation();
+    };
     return span;
   };
 
@@ -332,7 +342,8 @@ const makePost = (post) => {
     if (likelist.find(i => i.data.pubkey == u.pubkey) == null) {
       if (await sendPost(null, parent, "like")) {
         showToast("いいねしました");
-        likespan.textContent = "♥️" + (likelist.length + 1);
+        likespan.children[0].textContent = "♥️ ";
+        likespan.children[1].textContent = likelist.length + 1;
         likespan.onclick = null;
       }
     }
@@ -391,7 +402,8 @@ const makePost = (post) => {
       if (likelist.find(i => i.data.pubkey == u.pubkey) == null) {
         if (await sendPost(null, parent, "like")) {
           showToast("いいねしました");
-          likespan.textContent = "♥️" + (likelist.length + 1);
+          likespan.children[0].textContent = "♥️ ";
+          likespan.children[1].textContent = likelist.length + 1;
           likespan.onclick = null;
         }
       }
