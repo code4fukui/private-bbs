@@ -49,13 +49,14 @@ td, th {
 <script type="module">
 import { CSV } from "https://js.sabae.cc/CSV.js";
 import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/PubkeyUser.js";
+import { DateTime } from "https://js.sabae.cc/DateTime.js";
 
 const u = new PubkeyUser();
 
 const version = 6;
 
 const settings = await (await fetch("./settings.json?" + version)).json();
-document.title = title.textContent = settings.title;
+document.title = title.textContent = settings.title + "管理";
 const cssstyle2 = (settings.css || "style.css") + "?" + version;
 localStorage.setItem("cssstyle", cssstyle2);
 if (!window["link_csssytle"]) {
@@ -97,8 +98,13 @@ const makeTable = (csv) => {
   return tbl;
 };
 
+const sortByDate = (data, param = "dt") => {
+  data.sort((a, b) => b[param].localeCompare(a[param]));
+};
+
 const show = async () => {
   const res = await u.fetch("user_requestusers");
+  sortByDate(res);
   console.log(res);
   const list = res.map(i => {
     const btns = document.createElement("div");
@@ -133,7 +139,8 @@ const show = async () => {
     return {
       "名前": i.name,
       "合言葉": i.secret,
-      "公開鍵": i.pubkey.substring(0, 9) + "...",
+      "公開鍵": i.pubkey.substring(0, 4) + "...",
+      "申請日": new DateTime(i.dt).day.toString(),
       "操作": btns,
     };
   });
@@ -143,6 +150,7 @@ const show = async () => {
 const show2 = async () => {
   const res = await u.fetch("user_allowedusers");
   console.log(res);
+  sortByDate(res, "allowed");
   const list = res.map(i => {
     const btns = document.createElement("div");
     const btn = document.createElement("button");
@@ -162,7 +170,8 @@ const show2 = async () => {
     return {
       "名前": i.name,
       "合言葉": i.secret,
-      "公開鍵": i.pubkey.substring(0, 9) + "...",
+      "公開鍵": i.pubkey.substring(0, 4) + "...",
+      "許可日": new DateTime(i.allowed).day.toString(),
       "操作": btns,
     };
   });
