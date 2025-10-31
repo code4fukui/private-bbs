@@ -13,7 +13,7 @@ const icon = settings.icon;
 const url = settings.url;
 
 const server_settings = JSON.parse(await Deno.readTextFile("./server_settings.json"));
-const admin_pubkey = server_settings.admin_pubkey;
+const admin_pubkey = Array.isArray(server_settings.admin_pubkey) ? server_settings.admin_pubkey : [server_settings.admin_pubkey];
 
 const posts = await Posts.create();
 
@@ -48,8 +48,7 @@ const api = async (path, param, pubkey, req, conn) => {
   if (!pubkey) return "no pubkey";
   
   // UserManager admin
-  console.log(pubkey)
-  if (pubkey == admin_pubkey) {
+  if (admin_pubkey.indexOf(pubkey) >= 0) {
     if (path == "user_requestusers") {
       return await uman.getRequestUsers();
     } else if (path == "user_allowedusers") {
@@ -75,18 +74,15 @@ const api = async (path, param, pubkey, req, conn) => {
 
   // UserManager
   if (!await uman.isAllowed(pubkey)) {
-    console.log("not allowed")
     if (path == "user_add") {
       if (!param.name || !param.secret) {
         return { error: "no name or secret" };
       }
-      console.log(param);
       await uman.add(pubkey, param.name, param.secret);
       return { result: "ok" };
     }
     return { error: "not allowed" };
   }
-  console.log("allowed");
 
   if (path == "add") {
     const post = param;
