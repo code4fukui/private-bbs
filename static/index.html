@@ -248,7 +248,7 @@ const sendPost = async (body, parent = null, action = undefined) => {
   localStorage.setItem("name", name);
   const room = getRoom();
 
-  const id = TAI64N.stringify(TAI64N.encode(new Date()));
+  const id = TAI64N.stringify(TAI64N.now());
   const data = {
     id,
     parent,
