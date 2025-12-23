@@ -13,7 +13,8 @@ const posts = await Posts.create();
 const gmailc = Deno.env.get("GMAIL_ID_PASS").split("/");
 const mailer = new Gmailer(gmailc[0], gmailc[1]);
 const sendmail = async (param) => {
-  const url = "http://localhost:7001/?mail=" + param.mail + "&uuid=" + param.uuid;
+  //const url = "http://localhost:7001/?mail=" + param.mail + "&uuid=" + param.uuid;
+  const url = "https://try.sabae.cc/?mail=" + param.mail + "&uuid=" + param.uuid;
   const body = `${param.name}さま
 
 こんにちは、鯖江商工会議所です。
