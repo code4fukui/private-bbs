@@ -3,3 +3,4 @@ data/
 log/
 /Users/fukuno/data/js/service/private-bbs/static/vapidPublicKey.txt
 static/vapidPublicKey.txt
+server_settings.json

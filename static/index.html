@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
-<title>困り事解決策、大募集BBS</title>
+<title>企業の困り事解決コンテスト</title>
 <link rel="stylesheet" href="style.css">
 </head><body>
 
-<header>困り事解決策、大募集BBS</header>
+<header>企業の困り事解決コンテスト</header>
 
 <div class="container" id="div_container">
   <div id=posts>
@@ -45,6 +45,19 @@ import { DateTime } from "https://js.sabae.cc/DateTime.js";
 
 const u = new PubkeyUser();
 
+const params = new URLSearchParams(window.location.search);
+const mail = params.get("mail");
+const uuid = params.get("uuid");
+
+if (mail && uuid) {
+  // 2. アドレスバーから ?token=... を消す
+  const url = new URL(window.location.href);
+  url.search = ""; // クエリ全削除
+  window.history.replaceState(null, "", url.toString());
+
+  await u.fetch("login", { mail, uuid });
+}
+
 let data = [];
 
 let lastdt = null;
@@ -53,6 +66,10 @@ const show = async () => {
   posts.innerHTML = "";
 
   const res = await u.fetch("getLatest", lastdt);
+  if (typeof res == "string") {
+    alert(res);
+    return;
+  }
   for (const item of res) {
     if (!lastdt) {
       lastdt = item.data.id;
@@ -111,8 +128,8 @@ const makePost = (post) => {
   div2.className = "post-content";
   div.appendChild(div2);
   const st = document.createElement("strong");
-  // st.textContent = item.data.name;
-  st.textContent = post.data.pubkey.substring(0, 4);
+  st.textContent = post.data.name;
+  //st.textContent = post.data.pubkey.substring(0, 4);
   div2.appendChild(st);
   const txt = document.createTextNode(post.data.body);
   div2.appendChild(txt);
@@ -131,8 +148,8 @@ const makePost = (post) => {
     const divc = document.createElement("div");
     divc.className = "comment";
     const st = document.createElement("strong");
-    // st.textContent = item.data.name;
-    st.textContent = item.data.pubkey.substring(0, 4);
+    st.textContent = item.data.name;
+    //st.textContent = item.data.pubkey.substring(0, 4);
     divc.appendChild(st);
     const text = document.createTextNode(item.data.body);
     divc.appendChild(text);
@@ -150,7 +167,7 @@ const makePost = (post) => {
   let inp = null;
   if (multilinecomment) {
     inp = document.createElement("textarea");
-    inp.placeholder = "解決策案をどうぞ！";
+    inp.placeholder = "コメントを書く...";
   } else {
     inp = document.createElement("input");
     inp.type = "text";

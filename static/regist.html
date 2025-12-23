@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>企業の困り事解決コンテスト 新規登録</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+
+<header>企業の困り事解決コンテスト 新規登録</header>
+
+<div class="container" id="div_container">
+  <div class="post-form">
+    <h2>メールアドレスで登録</h2>
+    ニックネーム <input type="text" id="in_name" required placeholder=""><br>
+    メールアドレス <input type="text" id="in_mail" required placeholder=""><br>
+    ※ コンテストの参加には、福井高専の学生メールアドレスが必要です。<br>
+    <button id="btn_post">登録する</button>
+  </div>
+
+</div>
+
+<footer>
+<div><a href=https://github.com/code4fukui/private-bbs/>src on GitHub</a></div>
+</footer>
+
+<script type="module">
+import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser//PubkeyUser.js";
+import { isValidEmail} from "https://code4fukui.github.io/validator/isValidEmail.js";
+
+const u = new PubkeyUser();
+
+btn_post.onclick = async (e) => {
+  btn_post.disabled = true;
+  const name = in_name.value.trim();
+  const mail = in_mail.value.trim();
+  if (!name || !mail) return;
+  if (!isValidEmail(mail)) {
+    alert("正しいメールアドレスを入力してください");
+  } else {
+    const res = await u.fetch("regist", { name, mail });
+    if (res === "true") {
+      alert("登録しました。メールをご確認ください。")
+    } else {
+      alert(res);
+    }
+  }
+  btn_post.disabled = false;
+  e.preventDefault();
+};
+</script>
+</body></html>

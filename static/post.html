@@ -157,10 +157,14 @@ const makePost = (post) => {
 btn_post.onclick = async (e) => {
   const body = ta_body.value;
   if (!body) return;
-  if (await sendPost(body)) {
+  const res = await sendPost(body);
+  //console.log(res, typeof res)
+  if (res === "true") {
     ta_body.value = "";
     await show();
     location.href = "./";
+  } else {
+    alert(res);
   }
   e.preventDefault();
 };
