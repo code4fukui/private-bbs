@@ -7,6 +7,9 @@ import { isValidEmail} from "https://code4fukui.github.io/validator/isValidEmail
 import { Gmailer } from "https://code4fukui.github.io/Gmailer/Gmailer.js";
 import "https://deno.land/std@0.224.0/dotenv/load.ts"; // ?
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
+import { IDChecker } from "https://code4fukui.github.io/IDChecker/IDChecker.js";
+
+const idchecker = new IDChecker(Deno.env.get("ALLOWED_MAILADDRESS").split(","));
 
 const posts = await Posts.create();
 
@@ -60,11 +63,7 @@ const api = async (path, param, pubkey) => {
   } else if (path == "regist") {
     const mail = param.mail;
     if (!isValidEmail(mail)) return;
-    if (!(
-      mail.endsWith("@fukui-nct.ac.jp") ||
-      mail =="fukuno@jig.jp" ||
-      mail == "ichi@toptecno.co.jp"
-    )) {
+    if (!idchecker.check(mail)) {
       return "福井高専メールアドレス以外ではご登録いただけません";
     }
     console.log("regist", param);
