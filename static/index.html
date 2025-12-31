@@ -252,7 +252,7 @@ const sendPost = async (body, parent = null, action = undefined) => {
   localStorage.setItem("name", name);
   const room = getRoom();
 
-  if (isFilesUploading()) {
+  if (parent == null && isFilesUploading()) {
     alert("アップロード中です。アップロードが終わってから再度押してください。");
     return;
   }
