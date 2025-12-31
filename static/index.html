@@ -540,6 +540,7 @@ infile.onchange = async (e) => {
   }
 };
 const isFilesUploading = () => {
+  const files = infile.files;
   return files.filter(i => !i.uploaded).length > 0;
 };
 const getFiles = async () => {
