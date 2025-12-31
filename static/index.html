@@ -252,6 +252,10 @@ const sendPost = async (body, parent = null, action = undefined) => {
   localStorage.setItem("name", name);
   const room = getRoom();
 
+  if (isFilesUploading()) {
+    alert("アップロード中です。アップロードが終わってから再度押してください。");
+    return;
+  }
   const id = TAI64N.stringify(TAI64N.now());
   const files = parent == null ? await getFiles() : undefined;
   const data = {
@@ -535,13 +539,12 @@ infile.onchange = async (e) => {
     file.uploaded = true;    
   }
 };
+const isFilesUploading = () => {
+  return files.filter(i => !i.uploaded).length > 0;
+};
 const getFiles = async () => {
   const files = infile.files;
   if (files.length == 0) return undefined;
-  if (files.filter(i => !i.uploaded).length) {
-    alert("アップロード中です。アップロードが終わってから再度押してください。");
-    return;
-  }
   return files.map(i => ({ tid: i.tid, fn: i.name }));
 };
 </script>
