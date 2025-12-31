@@ -5,6 +5,8 @@
 <!--<link rel="stylesheet" href="style.css">-->
 </head><body>
 
+<script type="module" src="https://code4fukui.github.io/input-file/input-file.js"></script>
+  
 <header>
   <h1 id="title">BBS</h1>
   <div id="div_header">
@@ -26,6 +28,7 @@
   <div class="post-form" id="div_postform">
     <h2>新規投稿</h2>
     <textarea id="ta_body" placeholder="本文をどうぞ！" rows="3" required></textarea>
+    <input-file id="infile" multiple></input-file><br>
     <button id="btn_post">投稿する</button>
   </div>
 
@@ -84,6 +87,7 @@ import { showToast } from "./showToast.js";
 //import { WebPush } from "https://code4fukui.github.io/tsuchichat/static/WebPush.js";
 import { WebPush } from "./WebPush.js";
 import { makeTextWithLink } from "./makeTextWithLink.js";
+import { downloadFile } from "https://js.sabae.cc/downloadFile.js";
 
 const version = 7;
 
@@ -249,6 +253,7 @@ const sendPost = async (body, parent = null, action = undefined) => {
   const room = getRoom();
 
   const id = TAI64N.stringify(TAI64N.now());
+  const files = parent == null ? await getFiles() : undefined;
   const data = {
     id,
     parent,
@@ -259,6 +264,7 @@ const sendPost = async (body, parent = null, action = undefined) => {
     uuid,
     room,
     action,
+    files,
   };
   const post = Post.create(data, Coder.decode(u.prikey));
   try {
@@ -312,7 +318,7 @@ const makePost = (post) => {
   const dt = document.createElement("span");
   dt.className = "time";
   dt.textContent = time(post.data.id);
-  div2.appendChild(dt);
+  div2.appendChild(dt); 
   // like
   const createLikeIcon = (likelist) => {
     const span = document.createElement("span");
@@ -368,6 +374,24 @@ const makePost = (post) => {
       }
     };
     div2.appendChild(remspan);
+  }
+
+  // files
+  if (post.data.files) {
+    const divp = document.createElement("div");
+    divp.className = "files";
+    div2.appendChild(divp);
+    for (const file of post.data.files) {
+      const div = document.createElement("a");
+      div.className = "file";
+      div.textContent = file.fn;// + " " + file.tid;
+      divp.appendChild(div);
+      div.onclick = async () => {
+        console.log(file);
+        const bin = await u.fetch("download", file);
+        return downloadFile(file.fn, bin);
+      };
+    }
   }
   
   // comments
@@ -460,6 +484,7 @@ btn_post.onclick = async (e) => {
   if (!body) return;
   if (await sendPost(body)) {
     ta_body.value = "";
+    infile.clear();
     clearBody();
     showToast("投稿しました");
     await show();
@@ -488,6 +513,36 @@ await show();
 
 spanreload.onclick = async () => {
   await show();
+};
+
+// for file upload
+infile.onchange = async (e) => {
+  const files = e.detail.files;
+  console.log(files);
+
+  for (const file of files) {
+    if (file.uploading) continue;
+    file.uploading = true;
+    const fn = file.name;
+    const bin = new Uint8Array(await file.arrayBuffer());
+    const res = await u.fetch("upload", { fn, bin });
+    if (res.error) {
+      alert(res.error);
+      file.uploading = false;
+      continue;
+    }
+    file.tid = res;
+    file.uploaded = true;    
+  }
+};
+const getFiles = async () => {
+  const files = infile.files;
+  if (files.length == 0) return undefined;
+  if (files.filter(i => !i.uploaded).length) {
+    alert("アップロード中です。アップロードが終わってから再度押してください。");
+    return;
+  }
+  return files.map(i => ({ tid: i.tid, fn: i.name }));
 };
 </script>
 </body></html>

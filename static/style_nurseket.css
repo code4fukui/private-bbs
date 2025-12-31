@@ -20,12 +20,26 @@ h2 {
   margin: 1rem auto;
   padding: 0 1rem;
 }
+input-file {
+  margin-bottom: .5em;
+}
+.files {
+  border: 1px dashed #aaa;
+  margin: .8em 0 .2em 0;
+  padding: .2em .5em;
+}
+.files .file {
+  display: block;
+}
 .post-form, .usermanager {
   background: #fff;
   padding: 1rem;
   border: 1px solid #f8c8d8;
   margin-bottom: 2rem;
   border-radius: 6px;
+}
+textarea {
+  line-height: 1.3;
 }
 .post-content textarea, .post-form textarea {
   font-size: 16px;

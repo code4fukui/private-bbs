@@ -1,9 +1,12 @@
-import { makeFetch } from "https://code4fukui.github.io/PubkeyUser/serverutil.js";
+import { makeFetch, ret } from "https://code4fukui.github.io/PubkeyUser/serverutil.js";
 import { Posts } from "./Posts.js";
 import { JSONLWriter } from "https://code4fukui.github.io/JSONL/JSONLWriter.js";
 import { DateTime, TimeZone } from "https://js.sabae.cc/DateTime.js";
 import { subscribe, unsubscribe, pushAll } from "https://code4fukui.github.io/tsuchichat/webpushutil.js";
 import { UserManager } from "https://code4fukui.github.io/UserManager/UserManager.js";
+import { FileStorage } from "https://code4fukui.github.io/FileStorage/FileStorage.js";
+import { TID } from "https://code4fukui.github.io/TID/TID.js";
+import { EXT } from "https://code4fukui.github.io/EXT/EXT.js";
 
 const uman = await UserManager.create();
 
@@ -16,6 +19,8 @@ const server_settings = JSON.parse(await Deno.readTextFile("./server_settings.js
 const admin_pubkey = Array.isArray(server_settings.admin_pubkey) ? server_settings.admin_pubkey : [server_settings.admin_pubkey];
 
 const posts = await Posts.create();
+
+const fs = new FileStorage("files");
 
 const logdir = "log";
 await Deno.mkdir(logdir, { recursive: true });
@@ -108,6 +113,20 @@ const api = async (path, param, pubkey, req, conn) => {
     const data = param.data;
     return pushAll(uuid, data);
     */
+  } else if (path == "upload") {
+    const tid = TID.create();
+    const ext = EXT.get(param.fn);
+    await fs.save(TID.getPath(tid, ext), param.bin);
+    console.log("up", tid);
+    return tid;
+  } else if (path == "download") {
+    console.log(param);
+    const tid = param.tid;
+    const ext = EXT.get(param.fn);
+    const bin = await fs.load(TID.getPath(tid, ext));
+    //const ctype = EXT.getContentType(ext);
+    //return ret(bin, 200, ctype);
+    return bin;
   } else {
     console.log("path", path)
     return "not found";
