@@ -89,7 +89,7 @@ import { WebPush } from "./WebPush.js";
 import { makeTextWithLink } from "./makeTextWithLink.js";
 import { downloadFile } from "https://js.sabae.cc/downloadFile.js";
 
-const version = 7;
+const version = 8;
 
 const settings = await (await fetch("./settings.json?" + version)).json();
 document.title = title.textContent = settings.title;
