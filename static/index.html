@@ -520,6 +520,8 @@ spanreload.onclick = async () => {
 };
 
 // for file upload
+const MAX_FILE_SIZE_MB = 50;
+
 infile.onchange = async (e) => {
   const files = e.detail.files;
   console.log(files);
@@ -529,6 +531,11 @@ infile.onchange = async (e) => {
     file.uploading = true;
     const fn = file.name;
     const bin = new Uint8Array(await file.arrayBuffer());
+    if (bin.length > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      alert("アップロードするファイルは、" + MAX_FILE_SIZE_MB + "MB以内にしてください");
+      file.uploading = false;
+      continue;
+    }
     const res = await u.fetch("upload", { fn, bin });
     if (res.error) {
       alert(res.error);
