@@ -26,12 +26,16 @@ const logdir = "log";
 await Deno.mkdir(logdir, { recursive: true });
 
 const log = async (pubkey, path, param, req, conn) => {
-  const ua = req?.headers.get("user-agent") || "";
-  const dt = new DateTime();
-  const ymd = dt.toLocal(TimeZone.JST).day.toStringYMD();
-  const w = new JSONLWriter(logdir + "/" + ymd + ".jsonl", true);
-  await w.writeRecord({ pubkey, path, param, ua });
-  w.close();
+  try {
+    const ua = req?.headers.get("user-agent") || "";
+    const dt = new DateTime();
+    const ymd = dt.toLocal(TimeZone.JST).day.toStringYMD();
+    const w = new JSONLWriter(logdir + "/" + ymd + ".jsonl", true);
+    await w.writeRecord({ pubkey, path, ua });
+    w.close();
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const sendNotify = async (uuid, text, room) => {
