@@ -1,14 +1,15 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
-<title>困り事 新規投稿</title>
+<title>お困り事 新規投稿</title>
 <link rel="stylesheet" href="style.css">
 </head><body>
 
-<header>困り事解決策募集</header>
+<header>お困り事解決策募集</header>
 
 <div class="container" id="div_container">
   <div class="post-form">
-    <h2>困り事 新規投稿</h2>
-    <textarea id="ta_body" placeholder="困り事をどうぞ！" rows="3" required></textarea>
+    <h2>お困り事 新規投稿</h2>
+    <textarea id="ta_body" placeholder="お困り事" rows="3" required></textarea>
+    <div id="divdata"></div>
     <button id="btn_post">投稿する</button>
   </div>
 
@@ -28,8 +29,32 @@ import { TAI64N } from "https://code4fukui.github.io/TAI64N-es/TAI64N.js";
 import { Post } from "./Post.js";
 import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser//PubkeyUser.js";
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
+import { InputFilePubkeyUser } from "https://code4fukui.github.io/PubkeyUser/InputFilePubkeyUser.js";
 
 const u = new PubkeyUser();
+
+const infile = new InputFilePubkeyUser(u);
+
+const names = [
+  "企業名", "代表者名", "住所", "HP", "事業内容",
+];
+
+const divs = [];
+for (const name of names) {
+  const div = document.createElement("div");
+  const inp = document.createElement("input");
+  inp.type = "text";
+  const span = document.createElement("span");
+  span.textContent = name;
+  div.appendChild(span);
+  div.appendChild(inp);
+  divdata.appendChild(div);
+  divs.push({ name, inp });
+}
+divdata.appendChild(infile);
+const getOptions = () => {
+  return divs.map(i => `${i.name}: ${i.inp.value}`).join("\n");
+};
 
 let data = [];
 
@@ -59,7 +84,13 @@ const show = async () => {
   }
 };
 
-const sendPost = async (body, parent = null) => {
+const sendPost = async (body, parent = null, infile) => {
+  if (infile && infile.isFilesUploading()) {
+    alert("アップロード中です。アップロードが終わってから再度押してください。");
+    return;
+  }
+  const files = infile ? await infile.getFiles() : undefined;
+
   const id = TAI64N.stringify(TAI64N.encode(new Date()));
   const data = {
     id,
@@ -68,6 +99,7 @@ const sendPost = async (body, parent = null) => {
     name: "user1",
     body,
     tags: ["test"],
+    files,
   };
   const post = Post.create(data, Coder.decode(u.prikey));
   const res = await u.fetch("add", post);
@@ -157,9 +189,10 @@ const makePost = (post) => {
 btn_post.onclick = async (e) => {
   const body = ta_body.value;
   if (!body) return;
-  const res = await sendPost(body);
+  const body2 = "\nお困り毎:\n" + body + "\n\n" + getOptions() + "\n";
+  const res = await sendPost(body2, null, infile);
   //console.log(res, typeof res)
-  if (res === "true") {
+  if (res == "ok") {
     ta_body.value = "";
     await show();
     location.href = "./";

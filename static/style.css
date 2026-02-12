@@ -59,6 +59,14 @@ header.shrink {
 input-file-pubkey-user {
   margin-bottom: 0.8em;
 }
+.files {
+  border: 1px dashed #aaa;
+  margin: .8em 0 .2em 0;
+  padding: .2em .5em;
+}
+.files .file {
+  display: block;
+}
 .post-form button {
   background: #0095f6;
   color: white;

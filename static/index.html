@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
-<title>企業の困り事解決コンテスト</title>
+<title>企業のお困り事解決アイデアコンテスト - 福井高専✕鯖江商工会議所 工業部会 連携事業</title>
 <link rel="stylesheet" href="style.css">
 </head><body>
 
-<header>企業の困り事解決コンテスト</header>
+<header>企業のお困り事解決アイデアコンテスト</header>
 
 <div class="container" id="div_container">
   <div id=posts>
@@ -43,6 +43,7 @@ import { Post } from "./Post.js";
 import { PubkeyUser, Coder } from "https://code4fukui.github.io/PubkeyUser/PubkeyUser.js";
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
 import { InputFilePubkeyUser } from "https://code4fukui.github.io/PubkeyUser/InputFilePubkeyUser.js";
+import { downloadFile } from "https://js.sabae.cc/downloadFile.js";
 
 const u = new PubkeyUser();
 
@@ -92,6 +93,11 @@ const show = async () => {
 const sendPost = async (body, parent = null, infile = null) => {
   const id = TAI64N.stringify(TAI64N.encode(new Date()));
   
+  if (infile && infile.isFilesUploading()) {
+    alert("アップロード中です。アップロードが終わってから再度押してください。");
+    return;
+  }
+  const files = infile ? await infile.getFiles() : undefined;
   const data = {
     id,
     parent,
@@ -99,6 +105,7 @@ const sendPost = async (body, parent = null, infile = null) => {
     name: "user1",
     body,
     tags: ["test"],
+    files,
   };
   const post = Post.create(data, Coder.decode(u.prikey));
   const res = await u.fetch("add", post);
@@ -140,6 +147,27 @@ const makePost = (post) => {
   dt.textContent = time(post.data.id);
   div2.appendChild(dt);
   
+  // files
+  const appendFiles = (div2, files) => {
+    if (files) {
+      const divp = document.createElement("div");
+      divp.className = "files";
+      div2.appendChild(divp);
+      for (const file of files) {
+        const div = document.createElement("a");
+        div.className = "file";
+        div.textContent = file.fn;// + " " + file.tid;
+        divp.appendChild(div);
+        div.onclick = async () => {
+          //console.log(file);
+          const bin = await u.fetch("download", file);
+          return downloadFile(file.fn, bin);
+        };
+      }
+    }
+  };
+  appendFiles(div2, post.data.files);
+  
   // comments
   const com = document.createElement("div");
   com.className = "comments";
@@ -160,7 +188,10 @@ const makePost = (post) => {
     dt.textContent = time(item.data.id);
     divc.appendChild(dt);
     com.appendChild(divc);
+
+    appendFiles(divc, item.data.files);
   }
+
   // comments form
   const divcs = document.createElement("div");
   divcs.className = "add-comment";
@@ -169,11 +200,11 @@ const makePost = (post) => {
   let inp = null;
   if (multilinecomment) {
     inp = document.createElement("textarea");
-    inp.placeholder = "コメントを書く...";
+    inp.placeholder = "質問やアイデアをお書きください";
   } else {
     inp = document.createElement("input");
     inp.type = "text";
-    inp.placeholder = "コメントを書く...";
+    inp.placeholder = "質問やアイデアをお書きください";
   }
   divcs.appendChild(inp);
 
@@ -220,10 +251,12 @@ btn_sync.onclick = async () => {
 */
 
 //const autoupdate = 10 * 1000;
+/*
 const autoupdate = 60 * 1000; // 1min
 setInterval(async () => {
   await show();
 }, autoupdate);
+*/
 
 // sticky header
 const header = document.querySelector("header");

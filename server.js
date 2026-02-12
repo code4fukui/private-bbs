@@ -47,7 +47,7 @@ const api = async (path, param, pubkey) => {
     //console.log(post);
     const res = await posts.add(post);
     //console.log("res", res);
-    return res;
+    return res ? "ok" : "ng"; // res;
   } else if (path == "get") {
     const o = await fs.loadJSON("sabae/pubkey/" + pubkey + ".json");
     if (!o) return "not user";
