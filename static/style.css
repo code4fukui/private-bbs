@@ -56,6 +56,9 @@ header.shrink {
   resize: vertical; /* 横方向に拡大しない */
   box-sizing: border-box; /* padding・border を含めたサイズに */
 }
+input-file-pubkey-user {
+  margin-bottom: 0.8em;
+}
 .post-form button {
   background: #0095f6;
   color: white;

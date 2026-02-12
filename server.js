@@ -33,7 +33,7 @@ ${url}
 const fs = new FileStorage("./data");
 
 const api = async (path, param, pubkey) => {
-  console.log("api", path, path == "add", param, pubkey)
+  //console.log("api", path, path == "add", param, pubkey)
   if (!pubkey) return "no pubkey";
   if (path == "add") {
     const o = await fs.loadJSON("sabae/pubkey/" + pubkey + ".json");
@@ -44,9 +44,9 @@ const api = async (path, param, pubkey) => {
     }
     const post = param;
     post.data.name = o.name;
-    console.log(post);
+    //console.log(post);
     const res = await posts.add(post);
-    console.log("res", res);
+    //console.log("res", res);
     return res;
   } else if (path == "get") {
     const o = await fs.loadJSON("sabae/pubkey/" + pubkey + ".json");
