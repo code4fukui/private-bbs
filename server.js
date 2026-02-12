@@ -72,7 +72,7 @@ const api = async (path, param, pubkey) => {
     param.dt = new DateTime().toString();
     await fs.saveJSON("sabae/user/" + param.mail + ".json", param);
     await sendmail(param);
-    return true; //param.tid;
+    return "ok"; //param.tid;
   } else if (path == "login") {
     console.log("login", param, pubkey);
     const o = await fs.loadJSON("sabae/user/" + param.mail + ".json");

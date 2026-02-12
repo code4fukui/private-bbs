@@ -35,7 +35,7 @@ btn_post.onclick = async (e) => {
     alert("正しいメールアドレスを入力してください");
   } else {
     const res = await u.fetch("regist", { name, mail });
-    if (res === "true") {
+    if (res == "ok") {
       alert("登録しました。メールをご確認ください。")
     } else {
       alert(res);
