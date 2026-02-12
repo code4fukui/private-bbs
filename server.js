@@ -121,10 +121,10 @@ const api = async (path, param, pubkey, req, conn) => {
     const tid = TID.create();
     const ext = EXT.get(param.fn);
     await fs.save(TID.getPath(tid, ext), param.bin);
-    console.log("up", tid);
+    //console.log("up", tid);
     return tid;
   } else if (path == "download") {
-    console.log(param);
+    //console.log(param);
     const tid = param.tid;
     const ext = EXT.get(param.fn);
     const bin = await fs.load(TID.getPath(tid, ext));
