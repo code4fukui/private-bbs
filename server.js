@@ -8,6 +8,7 @@ import { Gmailer } from "https://code4fukui.github.io/Gmailer/Gmailer.js";
 import "https://deno.land/std@0.224.0/dotenv/load.ts"; // ?
 import { DateTime } from "https://js.sabae.cc/DateTime.js";
 import { IDChecker } from "https://code4fukui.github.io/IDChecker/IDChecker.js";
+import { EXT } from "https://code4fukui.github.io/EXT/EXT.js";
 
 const idchecker = new IDChecker(Deno.env.get("ALLOWED_MAILADDRESS").split(","));
 
@@ -31,6 +32,7 @@ ${url}
 };
 
 const fs = new FileStorage("./data");
+const fsfiles = new FileStorage("files");
 
 const api = async (path, param, pubkey) => {
   //console.log("api", path, path == "add", param, pubkey)
@@ -79,6 +81,20 @@ const api = async (path, param, pubkey) => {
     if (o.uuid != param.uuid) return "wrong uuid";
     await fs.saveJSON("sabae/pubkey/" + pubkey + ".json", o);
     return true;
+  } else if (path == "upload") {
+    const tid = TID.create();
+    const ext = EXT.get(param.fn);
+    await fsfiles.save(TID.getPath(tid, ext), param.bin);
+    //console.log("up", tid);
+    return tid;
+  } else if (path == "download") {
+    //console.log(param);
+    const tid = param.tid;
+    const ext = EXT.get(param.fn);
+    const bin = await fsfiles.load(TID.getPath(tid, ext));
+    //const ctype = EXT.getContentType(ext);
+    //return ret(bin, 200, ctype);
+    return bin;
   } else {
     console.log("path", path)
     return "not found";
