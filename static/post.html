@@ -189,7 +189,7 @@ const makePost = (post) => {
 btn_post.onclick = async (e) => {
   const body = ta_body.value;
   if (!body) return;
-  const body2 = "\nお困り毎:\n" + body + "\n\n" + getOptions() + "\n";
+  const body2 = "\nお困り事:\n" + body + "\n\n" + getOptions() + "\n";
   const res = await sendPost(body2, null, infile);
   //console.log(res, typeof res)
   if (res == "ok") {
