@@ -27,10 +27,15 @@ import { isValidEmail} from "https://code4fukui.github.io/validator/isValidEmail
 const u = new PubkeyUser();
 
 btn_post.onclick = async (e) => {
-  btn_post.disabled = true;
   const name = in_name.value.trim();
   const mail = in_mail.value.trim();
-  if (!name || !mail) return;
+  if (!name || !mail) {
+    alert("ニックネームとメールアドレスを入力してください");
+    return;
+  }
+  
+  btn_post.disabled = true;
+  btn_post.textContent = "登録中...";
   if (!isValidEmail(mail)) {
     alert("正しいメールアドレスを入力してください");
   } else {
@@ -42,6 +47,7 @@ btn_post.onclick = async (e) => {
     }
   }
   btn_post.disabled = false;
+  btn_post.textContent = "登録";
   e.preventDefault();
 };
 </script>
