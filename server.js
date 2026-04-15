@@ -41,9 +41,13 @@ const api = async (path, param, pubkey) => {
     const o = await fs.loadJSON("sabae/pubkey/" + pubkey + ".json");
     if (!o) return "not user";
     //console.log("add", path)
+
+    // 一旦制限解除
+    /*
     if (!param.parent && o.mail.indexOf("@fukui-nct") >= 0) {
       return "学生は困りごとを投稿できません";
     }
+    */
     const post = param;
     post.data.name = o.name;
     //console.log(post);
