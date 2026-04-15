@@ -69,9 +69,12 @@ const api = async (path, param, pubkey) => {
   } else if (path == "regist") {
     const mail = param.mail;
     if (!isValidEmail(mail)) return;
+    // 一旦制限解除
+    /*
     if (!idchecker.check(mail)) {
       return "福井高専メールアドレス以外ではご登録いただけません";
     }
+    */
     console.log("regist", param);
     param.tid = TID.create();
     param.uuid = UUID.create();
