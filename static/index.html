@@ -89,7 +89,7 @@ import { makeTextWithLink } from "./makeTextWithLink.js";
 import { downloadFile } from "https://js.sabae.cc/downloadFile.js";
 import { InputFilePubkeyUser } from "https://code4fukui.github.io/PubkeyUser/InputFilePubkeyUser.js";
 
-const version = 11;
+const version = 12;
 
 const settings = await (await fetch("./settings.json?" + version)).json();
 document.title = title.textContent = settings.title;
