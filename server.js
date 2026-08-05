@@ -48,7 +48,11 @@ const sendNotify = async (uuid, text, room) => {
     //timeout: 5000, // 通知を消すまでの長さ msec （デフォルト0:消さない）
     //delay: 1000, // 表示するまでの時間 msec（デフォルト0）
   };
-  await pushAll(uuid, data);
+  try {
+    await pushAll(uuid, data);
+  } catch (e) {
+    console.log("push err " + e);
+  }
 };
 
 const api = async (path, param, pubkey, req, conn) => {
