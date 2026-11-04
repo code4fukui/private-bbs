@@ -39,6 +39,36 @@ input-file-pubkey-user {
   margin-bottom: 2rem;
   border-radius: 6px;
 }
+.post-form-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.post-form-heading h2 {
+  margin: 0;
+}
+.post-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+.post-controls input[type="text"] {
+  box-sizing: border-box;
+  width: 6.5em;
+  background: white;
+  font-size: 16px;
+  padding: 0.4rem;
+  border: 1px solid #f3a6c1;
+  border-radius: 4px;
+  margin: 0;
+}
+#spannotify {
+  cursor: pointer;
+  white-space: nowrap;
+}
 textarea {
   line-height: 1.3;
 }

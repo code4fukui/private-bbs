@@ -9,8 +9,6 @@
   <h1 id="title">BBS</h1>
   <div id="div_header">
     <span id=spanroom></span>
-    <input type="text" id="in_name" placeholder="名前">
-    <span id=spannotify>🔔<span id=spannotifyswitch>OFF</span></span>
     <span id=spanreload style="padding-left: 1em;">🔃</span>
   </div>
 </header>
@@ -24,7 +22,13 @@
   </div>
 
   <div class="post-form" id="div_postform">
-    <h2>新規投稿</h2>
+    <div class="post-form-heading">
+      <h2>新規投稿</h2>
+      <div class="post-controls">
+        <input type="text" id="in_name" placeholder="名前">
+        <span id="spannotify">🔔<span id="spannotifyswitch">OFF</span></span>
+      </div>
+    </div>
     <textarea id="ta_body" placeholder="本文をどうぞ！" rows="3" required></textarea>
     <span id="infilec"></span>
     <!--<input-file id="infile" multiple></input-file>--><br>
@@ -103,6 +107,8 @@ if (!window["link_csssytle"]) {
 }
 
 let selroom = null;
+const selcategory = document.createElement("select");
+selcategory.setAttribute("aria-label", "カテゴリで絞り込み");
 const notificationURL = new URL(location.href);
 let notificationRoom = location.hash.slice(1);
 try {
@@ -123,6 +129,7 @@ if (settings.rooms && settings.rooms.length > 0) {
   }
   selroom = sel;
 }
+spanroom.appendChild(selcategory);
 const getRoom = () => {
   return selroom ? selroom.value : undefined;
 };
@@ -227,11 +234,34 @@ const show = async () => {
   for (const item of list) {
     item.latest = latest(item);
   }
+  updateCategories(list);
   list.sort((a, b) => b.latest.localeCompare(a.latest));
   //console.log(list);
   bklist = list;
 
   reshow();
+};
+
+const getCategory = (post) => {
+  const match = post.data.body?.match(/^\s*【([^】]+)】/);
+  return match ? match[1].trim() : "";
+};
+
+const updateCategories = (list) => {
+  const selected = selcategory.value;
+  const categories = [...new Set(list.map(getCategory).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ja"));
+  selcategory.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "";
+  all.textContent = "全投稿";
+  selcategory.appendChild(all);
+  for (const category of categories) {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = `【${category}】`;
+    selcategory.appendChild(option);
+  }
+  if (categories.includes(selected)) selcategory.value = selected;
 };
 
 const reshow = async () => {
@@ -250,6 +280,8 @@ const reshow = async () => {
         if (!firstroom) continue;
       }
     }
+    const category = selcategory.value;
+    if (category && getCategory(item) !== category) continue;
     const div = makePost(item);
     posts.appendChild(div);
   }
@@ -301,6 +333,7 @@ const sendPost = async (body, parent = null, action = undefined, infile = undefi
 if (selroom) {
   selroom.onchange = () => reshow();
 }
+selcategory.onchange = () => reshow();
 
 const getComments = (post) => {
   const com = data.filter(i => post.data.id == i.data.parent);
