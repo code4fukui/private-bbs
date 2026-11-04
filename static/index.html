@@ -7,12 +7,12 @@
 
 <header>
   <h1 id="title">BBS</h1>
-  <div id="div_header">
-    <span id=spanroom></span>
-    <span id=spanreload style="padding-left: 1em;">🔃</span>
-  </div>
 </header>
 
+<div class="page-layout">
+<aside class="filters" id="div_filters">
+  <span id="spanroom"></span>
+</aside>
 <div class="container" id="div_container">
   <div class="usermanager" id="div_usermanager" style="display: none">
     <input type="text" id="in_name2" placeholder="名前"><br>
@@ -55,6 +55,7 @@
   </div>
   -->
   </div>
+</div>
 </div>
 
 <!--
@@ -110,6 +111,7 @@ let selroom = null;
 const selcategory = document.createElement("select");
 selcategory.id = "selcategory";
 selcategory.setAttribute("aria-label", "カテゴリで絞り込み");
+const wideScreen = matchMedia("(min-width: 768px)");
 const notificationURL = new URL(location.href);
 let notificationRoom = location.hash.slice(1);
 try {
@@ -194,7 +196,7 @@ const show = async () => {
   if (res.error == "not allowed") {
     div_postform.style.display = "none";
     div_usermanager.style.display = "block";
-    div_header.style.display = "none";
+    div_filters.style.display = "none";
     btn_adduser.onclick = async () => {
       const res = await u.fetch("user_add", {
         name: in_name2.value + "(" + in_device.value + ")",
@@ -270,6 +272,7 @@ const updateCategories = (list) => {
     selcategory.appendChild(option);
   }
   if (categories.includes(selected)) selcategory.value = selected;
+  selcategory.size = wideScreen.matches ? Math.min(categories.length + 1, 10) : 1;
 };
 
 const reshow = async () => {
@@ -345,6 +348,9 @@ if (selroom) {
   };
 }
 selcategory.onchange = () => reshow();
+wideScreen.addEventListener("change", () => {
+  if (bklist) updateCategories(bklist);
+});
 
 const getComments = (post) => {
   const com = data.filter(i => post.data.id == i.data.parent);
@@ -605,8 +611,5 @@ setInterval(async () => {
 
 await show();
 
-spanreload.onclick = async () => {
-  await show();
-};
 </script>
 </body></html>
