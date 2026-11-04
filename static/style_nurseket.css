@@ -12,6 +12,19 @@ header {
   font-weight: bold;
   color: #d6336c; /* 落ち着いたピンク系文字色 */
 }
+#spanroom {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  max-width: 100%;
+}
+#selcategory {
+  box-sizing: border-box;
+  width: min(12em, calc(100vw - 2rem));
+  max-width: 100%;
+  min-width: 0;
+}
 h2 {
   color: #d6336c; /* 落ち着いたピンク系文字色 */
 }

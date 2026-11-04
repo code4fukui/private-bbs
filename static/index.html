@@ -108,6 +108,7 @@ if (!window["link_csssytle"]) {
 
 let selroom = null;
 const selcategory = document.createElement("select");
+selcategory.id = "selcategory";
 selcategory.setAttribute("aria-label", "カテゴリで絞り込み");
 const notificationURL = new URL(location.href);
 let notificationRoom = location.hash.slice(1);
@@ -249,7 +250,14 @@ const getCategory = (post) => {
 
 const updateCategories = (list) => {
   const selected = selcategory.value;
-  const categories = [...new Set(list.map(getCategory).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ja"));
+  const room = getRoom();
+  const firstroom = selroom?.selectedIndex == 0;
+  const roomPosts = list.filter(item => {
+    if (!room) return true;
+    if (item.data.room) return item.data.room == room;
+    return firstroom;
+  });
+  const categories = [...new Set(roomPosts.map(getCategory).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ja"));
   selcategory.innerHTML = "";
   const all = document.createElement("option");
   all.value = "";
@@ -258,7 +266,7 @@ const updateCategories = (list) => {
   for (const category of categories) {
     const option = document.createElement("option");
     option.value = category;
-    option.textContent = `【${category}】`;
+    option.textContent = category;
     selcategory.appendChild(option);
   }
   if (categories.includes(selected)) selcategory.value = selected;
@@ -331,7 +339,10 @@ const sendPost = async (body, parent = null, action = undefined, infile = undefi
 };
 
 if (selroom) {
-  selroom.onchange = () => reshow();
+  selroom.onchange = () => {
+    updateCategories(bklist || []);
+    reshow();
+  };
 }
 selcategory.onchange = () => reshow();
 
