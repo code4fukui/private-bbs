@@ -2,8 +2,8 @@
   "name": "ナースケットBBS",
   "short_name": "ナースケットBBS",
   "display": "standalone",
-  "Scope": "/",
-  "start_url": "https://nurseket-bbs.sabae.cc",
+  "scope": "/",
+  "start_url": "https://nurseket-bbs.sabae.cc/",
   "icons": [
     {
       "src": "icon.png",
