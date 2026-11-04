@@ -28,7 +28,7 @@ self.addEventListener("notificationclick", e => {
   const url = e.notification.data.url;
   if (url) {
     console.log("openWindow", url);
-    clients.openWindow(url);
+    e.waitUntil(clients.openWindow(url));
   }
   e.notification.close();
 });

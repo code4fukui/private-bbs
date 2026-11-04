@@ -38,13 +38,17 @@ const log = async (pubkey, path, param, req, conn) => {
   }
 };
 
-const sendNotify = async (uuid, text, room) => {
+const sendNotify = async (uuid, text, room, post) => {
   if (!uuid) return;
+  const threadId = post?.data?.parent || post?.data?.id;
+  const notifyURL = new URL(url);
+  if (room) notifyURL.hash = room;
+  if (threadId) notifyURL.searchParams.set("post", threadId);
   const data = {
     title: room ? room + " - " + title : title,
     body: text,
     icon,
-    data: { url: url + "#" + encodeURIComponent(room) },
+    data: { url: notifyURL.href },
     //timeout: 5000, // 通知を消すまでの長さ msec （デフォルト0:消さない）
     //delay: 1000, // 表示するまでの時間 msec（デフォルト0）
   };
@@ -101,7 +105,7 @@ const api = async (path, param, pubkey, req, conn) => {
     const post = param;
     const res = await posts.add(post);
     if (param.data.action != "remove" && param.data.action != "like") {
-      sendNotify(param.data.uuid, param.data.body, param.data.room);
+      sendNotify(param.data.uuid, param.data.body, param.data.room, param);
     }
     return res;
   } else if (path == "get") {

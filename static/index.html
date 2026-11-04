@@ -103,6 +103,12 @@ if (!window["link_csssytle"]) {
 }
 
 let selroom = null;
+const notificationURL = new URL(location.href);
+let notificationRoom = location.hash.slice(1);
+try {
+  notificationRoom = decodeURIComponent(notificationRoom);
+} catch (e) {}
+const notificationPost = notificationURL.searchParams.get("post");
 if (settings.rooms && settings.rooms.length > 0) {
   const sel = document.createElement("select");
   spanroom.appendChild(sel);
@@ -110,6 +116,10 @@ if (settings.rooms && settings.rooms.length > 0) {
     const opt = document.createElement("option");
     opt.textContent = room;
     sel.appendChild(opt);
+  }
+  if (notificationRoom) {
+    const roomIndex = settings.rooms.indexOf(notificationRoom);
+    if (roomIndex >= 0) sel.selectedIndex = roomIndex;
   }
   selroom = sel;
 }
@@ -243,6 +253,9 @@ const reshow = async () => {
     const div = makePost(item);
     posts.appendChild(div);
   }
+  if (notificationPost) {
+    document.getElementById("post-" + notificationPost)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 };
 
 in_name.value = localStorage.getItem("name") || "";
@@ -312,6 +325,7 @@ const time = (tai64n) => {
 const makePost = (post) => {
   const div = document.createElement("div");
   div.className = "post";
+  div.id = "post-" + post.data.id;
   const div2 = document.createElement("div");
   div2.className = "post-content";
   div.appendChild(div2);
