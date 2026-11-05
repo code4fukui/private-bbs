@@ -33,7 +33,6 @@ header {
     margin-block: 0.45em;
   }
   .filters select {
-    padding: 0.25em;
     margin-block: 0.33em;
   }
 }
@@ -54,6 +53,11 @@ h2 {
 }
 #spanroom select {
   font-size: 16px;
+  background-color: white;
+  padding: 0.4rem;
+  margin-right: 0.2rem;
+  border: 1px solid #f3a6c1;
+  border-radius: 4px;
 }
 @media (min-width: 768px) {
   .page-layout {
